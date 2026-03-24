@@ -118,7 +118,6 @@
 
     <script>
         const STORAGE_KEY = 'intelligent_switch_users';
-        const contextPath = '${pageContext.request.contextPath}';
 
         function initData() {
             if (!localStorage.getItem(STORAGE_KEY)) {
@@ -178,7 +177,7 @@
         };
 
         window.editUser = function(id) {
-            window.location.href = `${contextPath}/useredit?id=${id}`;
+            window.location.href = 'useredit?id=' + id;
         };
 
         initData();
