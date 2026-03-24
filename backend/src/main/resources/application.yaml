@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: backend
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+  web:
+    resources:
+      static-locations: classpath:/static/
+server:
+  port: 8080

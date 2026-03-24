@@ -1,0 +1,155 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Page</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-image: url("${pageContext.request.contextPath}/images/login_register_bg.png"); /* 确保图片在同一目录 */
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .register-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        .register-form {
+            display: flex;
+            flex-direction: column;
+        }
+        .register-form label {
+            margin-bottom: 5px;
+        }
+        .register-form input {
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .register-form button {
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .register-form button:hover {
+            background-color: #0056b3;
+        }
+        .toggle-link {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .toggle-link a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        .toggle-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h2>Register</h2>
+        <form class="register-form" id="registerForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <label for="confirm_password">Confirm Password:</label>
+            <input type="password" id="confirm_password" name="confirm_password" required>
+            <button type="submit">Register</button>
+        </form>
+        <div class="toggle-link">
+            Already have an account? <a href="${pageContext.request.contextPath}/login">Login here</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // 阻止表单默认提交行为
+
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+
+            // 1. 验证用户名：只能包含汉字、字母、数字
+            // \u4e00-\u9fa5 匹配汉字，a-zA-Z0-9 匹配字母和数字
+            const usernameRegex = /^[\u4e00-\u9fa5a-zA-Z0-9]+$/;
+            if (!usernameRegex.test(username)) {
+                alert('Username can only contain Chinese characters, letters, and numbers.');
+                return;
+            }
+
+            // 2. 验证邮箱格式 (使用 HTML5 type="email" 已做基础校验，此处加强逻辑)
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+
+            // 3. 验证密码：必须同时包含字母和数字
+            const hasLetter = /[a-zA-Z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            if (!hasLetter || !hasNumber) {
+                alert('Password must contain both letters and numbers.');
+                return;
+            }
+
+            // 4. 验证确认密码
+            if (password !== confirmPassword) {
+                alert('Passwords do not match.');
+                return;
+            }
+
+            // 验证通过，模拟注册成功
+            // 在实际项目中，这里应该发送 AJAX/Fetch 请求到后端
+            alert('Registration successful!');
+            
+            // 可选：将新用户存入 localStorage (模拟 home.html 的数据结构)
+            // 注意：home.html 目前只存了 username 和 email，未存密码（实际场景密码不应明文存储）
+            const STORAGE_KEY = 'intelligent_switch_users';
+            let users = [];
+            if (localStorage.getItem(STORAGE_KEY)) {
+                users = JSON.parse(localStorage.getItem(STORAGE_KEY));
+            }
+            
+            // 检查用户是否已存在
+            const userExists = users.some(u => u.username === username);
+            if (userExists) {
+                alert('Username already exists.');
+                return;
+            }
+
+            const newUser = {
+                id: Date.now(), // 生成简单唯一 ID
+                username: username,
+                email: email
+            };
+            users.push(newUser);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
+
+            // 跳转到登录页
+            window.location.href = '${pageContext.request.contextPath}/login';
+        });
+    </script>
+</body>
+</html>
