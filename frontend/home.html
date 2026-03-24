@@ -183,27 +183,8 @@
 
         // Edit user
         window.editUser = function(id) {
-            let users = getUsers();
-            const user = users.find(u => u.id === id);
-            
-            if (user) {
-                const newUsername = prompt("Enter new username:", user.username);
-                if (newUsername === null) return; // Cancelled
-
-                const newEmail = prompt("Enter new email:", user.email);
-                if (newEmail === null) return; // Cancelled
-
-                if (newUsername.trim() === "" || newEmail.trim() === "") {
-                    alert("Username and Email cannot be empty.");
-                    return;
-                }
-
-                user.username = newUsername.trim();
-                user.email = newEmail.trim();
-                
-                saveUsers(users);
-                renderTable();
-            }
+            // 跳转到专门的编辑页面，并传递用户 ID
+            window.location.href = `useredit.html?id=${id}`;
         };
 
         // Initialize on load

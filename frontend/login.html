@@ -84,17 +84,32 @@
 
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
+            const STORAGE_KEY = 'intelligent_switch_users';
 
-            // 简单模拟验证逻辑
-            // 在实际项目中，这里应该发送 AJAX/Fetch 请求到后端进行验证
-            if (username && password) {
-                // 模拟验证成功，跳转到 home 页面
-                // 可以将用户信息存入 sessionStorage 以便在 home 页展示当前登录用户
-                sessionStorage.setItem('currentUser', username);
-                window.location.href = 'home.html';
-            } else {
-                alert('Please enter both username and password.');
+            // 获取所有用户
+            let users = [];
+            if (localStorage.getItem(STORAGE_KEY)) {
+                users = JSON.parse(localStorage.getItem(STORAGE_KEY));
             }
+
+            // 1. 验证账户是否存在
+            const user = users.find(u => u.username === username);
+            
+            if (!user) {
+                alert('Account does not exist. Please register first.');
+                return;
+            }
+
+            // 2. 简单密码验证 (模拟：实际项目中应由后端验证，这里假设只要账户存在且密码非空即通过，或者您可以约定初始密码)
+            // 由于注册页未存储密码到 localStorage (出于安全考虑)，这里仅作非空检查或模拟验证
+            if (!password) {
+                alert('Please enter your password.');
+                return;
+            }
+            
+            // 模拟验证成功
+            sessionStorage.setItem('currentUser', username);
+            window.location.href = 'home.html';
         });
     </script>
 </body>
