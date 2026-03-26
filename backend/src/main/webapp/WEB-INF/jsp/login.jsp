@@ -81,38 +81,43 @@
 
     <script>
         document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // 阻止表单默认提交行为
+            event.preventDefault();
 
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
-            const STORAGE_KEY = 'intelligent_switch_users';
 
-            // 获取所有用户
-            let users = [];
-            if (localStorage.getItem(STORAGE_KEY)) {
-                users = JSON.parse(localStorage.getItem(STORAGE_KEY));
-            }
-
-            // 1. 验证账户是否存在
-            const user = users.find(u => u.username === username);
-            
-            if (!user) {
-                alert('Account does not exist. Please register first.');
+            if (!username || !password) {
+                alert('Please enter username and password.');
                 return;
             }
 
-            // 2. 简单密码验证 (模拟：实际项目中应由后端验证，这里假设只要账户存在且密码非空即通过，或者您可以约定初始密码)
-            // 由于注册页未存储密码到 localStorage (出于安全考虑)，这里仅作非空检查或模拟验证
-            if (!password) {
-                alert('Please enter your password.');
-                return;
-            }
-            
-            // 模拟验证成功
-            sessionStorage.setItem('currentUser', username);
-            window.location.href = '${pageContext.request.contextPath}/home';
+            // 发送请求到后端获取用户信息（简单验证）
+            // 注意：实际项目中应该有专门的登录接口进行认证
+            // 这里先获取所有用户，然后验证用户名和密码
+            fetch('${pageContext.request.contextPath}/api/users')
+                .then(response => response.json())
+                .then(users => {
+                    const user = users.find(u => u.username === username && u.password === password);
+
+                    if (user) {
+                        sessionStorage.setItem('currentUser', JSON.stringify(user));
+                        window.location.href = '${pageContext.request.contextPath}/home';
+                    } else {
+                        // 如果密码不匹配，尝试只验证用户名（临时方案）
+                        const userByName = users.find(u => u.username === username);
+                        if (userByName) {
+                            // 密码不匹配时的处理
+                            alert('Invalid password.');
+                        } else {
+                            alert('Account does not exist. Please register first.');
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Login failed. Please try again.');
+                });
         });
-
     </script>
 </body>
 </html>

@@ -7,10 +7,16 @@ import java.time.LocalDateTime;
 @Table(name = "users")
 public class User {
 
+    /**
+     * 用户 ID，主键，自增策略
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * 用户名，不可为空，唯一约束，最大长度 50
+     */
     @Column(nullable = false, unique = true, length = 50)
     private String username;
 

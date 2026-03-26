@@ -83,31 +83,48 @@
     </div>
 
     <script>
-        const STORAGE_KEY = 'intelligent_switch_users';
         const contextPath = '${pageContext.request.contextPath}';
+        const API_BASE_URL = contextPath + '/api/users';
+
+        console.log('Edit Page Debug:');
+        console.log('Context Path:', contextPath);
+        console.log('API Base URL:', API_BASE_URL);
+        console.log('Current URL:', window.location.href);
 
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const userId = urlParams.get('id');
 
+            console.log('User ID from URL:', userId);
+
             if (!userId) {
                 alert('Invalid user ID.');
-                window.location.href = `${contextPath}/home`;
+                window.location.href = contextPath + '/home';
                 return;
             }
 
-            const users = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-            const user = users.find(u => u.id == userId);
+            const fetchUrl = API_BASE_URL + '/' + userId;
+            console.log('Fetching user from:', fetchUrl);
 
-            if (!user) {
-                alert('User not found.');
-                window.location.href = `${contextPath}/home`;
-                return;
-            }
-
-            document.getElementById('userId').value = user.id;
-            document.getElementById('username').value = user.username;
-            document.getElementById('email').value = user.email;
+            fetch(fetchUrl)
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    if (!response.ok) {
+                        throw new Error('User not found');
+                    }
+                    return response.json();
+                })
+                .then(user => {
+                    console.log('User data loaded:', user);
+                    document.getElementById('userId').value = user.id;
+                    document.getElementById('username').value = user.username;
+                    document.getElementById('email').value = user.email;
+                })
+                .catch(error => {
+                    console.error('Error fetching user:', error);
+                    alert('User not found. Error: ' + error.message);
+                    window.location.href = contextPath + '/home';
+                });
         });
 
         document.getElementById('editForm').addEventListener('submit', function(event) {
@@ -134,25 +151,34 @@
                 return;
             }
 
-            let users = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-            const userIndex = users.findIndex(u => u.id == userId);
+            const updateUrl = API_BASE_URL + '/' + userId;
+            console.log('Updating user at:', updateUrl);
 
-            if (userIndex !== -1) {
-                const isDuplicate = users.some((u, index) => u.username === newUsername && index !== userIndex);
-                if (isDuplicate) {
-                    alert('Username already exists.');
-                    return;
+            fetch(updateUrl, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: newUsername,
+                    email: newEmail
+                })
+            })
+            .then(response => {
+                console.log('Update response status:', response.status);
+                if (response.ok) {
+                    alert('User updated successfully!');
+                    window.location.href = contextPath + '/home';
+                } else if (response.status === 404) {
+                    alert('User not found.');
+                } else {
+                    alert('Update failed. Please try again.');
                 }
-
-                users[userIndex].username = newUsername;
-                users[userIndex].email = newEmail;
-                
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
-                alert('User updated successfully!');
-                window.location.href = `${contextPath}/home`;
-            } else {
-                alert('Error: User not found.');
-            }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Update failed. Please try again.');
+            });
         });
     </script>
 </body>

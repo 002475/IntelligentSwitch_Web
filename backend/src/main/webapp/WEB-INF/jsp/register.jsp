@@ -84,7 +84,7 @@
 
     <script>
         document.getElementById('registerForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // 阻止表单默认提交行为
+            event.preventDefault();
 
             const username = document.getElementById('username').value.trim();
             const email = document.getElementById('email').value.trim();
@@ -92,14 +92,13 @@
             const confirmPassword = document.getElementById('confirm_password').value;
 
             // 1. 验证用户名：只能包含汉字、字母、数字
-            // \u4e00-\u9fa5 匹配汉字，a-zA-Z0-9 匹配字母和数字
             const usernameRegex = /^[\u4e00-\u9fa5a-zA-Z0-9]+$/;
             if (!usernameRegex.test(username)) {
                 alert('Username can only contain Chinese characters, letters, and numbers.');
                 return;
             }
 
-            // 2. 验证邮箱格式 (使用 HTML5 type="email" 已做基础校验，此处加强逻辑)
+            // 2. 验证邮箱格式
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
                 alert('Please enter a valid email address.');
@@ -120,35 +119,34 @@
                 return;
             }
 
-            // 验证通过，模拟注册成功
-            // 在实际项目中，这里应该发送 AJAX/Fetch 请求到后端
-            alert('Registration successful!');
-            
-            // 可选：将新用户存入 localStorage (模拟 home.html 的数据结构)
-            // 注意：home.html 目前只存了 username 和 email，未存密码（实际场景密码不应明文存储）
-            const STORAGE_KEY = 'intelligent_switch_users';
-            let users = [];
-            if (localStorage.getItem(STORAGE_KEY)) {
-                users = JSON.parse(localStorage.getItem(STORAGE_KEY));
-            }
-            
-            // 检查用户是否已存在
-            const userExists = users.some(u => u.username === username);
-            if (userExists) {
-                alert('Username already exists.');
-                return;
-            }
-
-            const newUser = {
-                id: Date.now(), // 生成简单唯一 ID
-                username: username,
-                email: email
-            };
-            users.push(newUser);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
-
-            // 跳转到登录页
-            window.location.href = '${pageContext.request.contextPath}/login';
+            // 发送请求到后端 API
+            fetch('${pageContext.request.contextPath}/api/users/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: username,
+                    email: email,
+                    password: password
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Registration successful!');
+                    window.location.href = '${pageContext.request.contextPath}/login';
+                } else if (response.status === 400) {
+                    return response.text().then(text => {
+                        throw new Error(text);
+                    });
+                } else {
+                    throw new Error('Registration failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(error.message || 'Registration failed. Please try again.');
+            });
         });
     </script>
 </body>

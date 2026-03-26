@@ -101,86 +101,139 @@
 
     <div class="container">
         <h2>User List</h2>
+        <p id="debugInfo" style="color: blue; font-size: 12px;"></p>
         <table id="userTable">
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Username</th>
                     <th>Email</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody id="userTableBody">
-                <!-- User rows will be inserted here by JavaScript -->
             </tbody>
         </table>
         <div id="emptyMessage" class="empty-message" style="display: none;">No users found.</div>
     </div>
 
     <script>
-        const STORAGE_KEY = 'intelligent_switch_users';
+        const API_BASE_URL = 'http://localhost:8080/api/users';
 
-        function initData() {
-            if (!localStorage.getItem(STORAGE_KEY)) {
-                const defaultUsers = [
-                    { id: 1, username: 'admin', email: 'admin@example.com' },
-                    { id: 2, username: 'user1', email: 'user1@example.com' },
-                    { id: 3, username: 'test_user', email: 'test@example.com' }
-                ];
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultUsers));
-            }
-        }
-
-        function getUsers() {
-            const users = localStorage.getItem(STORAGE_KEY);
-            return users ? JSON.parse(users) : [];
-        }
-
-        function saveUsers(users) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
-        }
+        console.log('=== Debug Info ===');
+        console.log('API Base URL:', API_BASE_URL);
 
         function renderTable() {
-            const users = getUsers();
-            const tbody = document.getElementById('userTableBody');
-            const emptyMsg = document.getElementById('emptyMessage');
-            
-            tbody.innerHTML = '';
+            const debugInfo = document.getElementById('debugInfo');
+            debugInfo.textContent = 'Loading...';
 
-            if (users.length === 0) {
-                emptyMsg.style.display = 'block';
-                return;
-            } else {
-                emptyMsg.style.display = 'none';
-            }
+            console.log('\n--- Fetching Users ---');
+            console.log('Request URL:', API_BASE_URL);
 
-            users.forEach(user => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${user.username}</td>
-                    <td>${user.email}</td>
-                    <td>
-                        <button class="action-btn edit-btn" onclick="editUser(${user.id})">Edit</button>
-                        <button class="action-btn delete-btn" onclick="deleteUser(${user.id})">Delete</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
+            fetch(API_BASE_URL, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                console.log('Response Status:', response.status);
+                console.log('Response OK:', response.ok);
+
+                if (!response.ok) {
+                    throw new Error('HTTP error! status: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(users => {
+                console.log('Users data received:', users);
+                console.log('Number of users:', users.length);
+
+                debugInfo.textContent = 'Loaded ' + users.length + ' users successfully!';
+
+                const tbody = document.getElementById('userTableBody');
+                const emptyMsg = document.getElementById('emptyMessage');
+
+                tbody.innerHTML = '';
+                tbody.style.display = 'table-row-group';
+
+                if (users.length === 0) {
+                    emptyMsg.style.display = 'block';
+                    document.getElementById('userTable').style.display = 'none';
+                    console.log('No users in database');
+                    return;
+                } else {
+                    emptyMsg.style.display = 'none';
+                    document.getElementById('userTable').style.display = 'table';
+                }
+
+                users.forEach((user, index) => {
+                    console.log(`Rendering user ${index + 1}:`, user);
+                    const tr = document.createElement('tr');
+
+                    const userId = user.id || '-';
+                    const username = user.username || 'N/A';
+                    const email = user.email || 'N/A';
+
+                    tr.innerHTML = '<td>' + userId + '</td>' +
+                                   '<td>' + username + '</td>' +
+                                   '<td>' + email + '</td>' +
+                                   '<td>' +
+                                   '<button class="action-btn edit-btn" onclick="editUser(' + userId + ')">Edit</button>' +
+                                   '<button class="action-btn delete-btn" onclick="deleteUser(' + userId + ')">Delete</button>' +
+                                   '</td>';
+                    tbody.appendChild(tr);
+                });
+
+                console.log('Table rendered successfully');
+                console.log('Total rows in tbody:', tbody.children.length);
+            })
+            .catch(error => {
+                console.error('=== ERROR ===');
+                console.error('Error fetching users:', error);
+                debugInfo.textContent = 'Error: ' + error.message;
+
+                let errorMsg = 'Failed to load users\n\n';
+                errorMsg += 'Error: ' + error.message + '\n\n';
+                errorMsg += 'Please check backend is running on http://localhost:8080';
+
+                alert(errorMsg);
             });
         }
 
         window.deleteUser = function(id) {
             if (confirm('Are you sure you want to delete this user?')) {
-                let users = getUsers();
-                users = users.filter(user => user.id !== id);
-                saveUsers(users);
-                renderTable();
+                const deleteUrl = API_BASE_URL + '/' + id;
+                console.log('Deleting user with ID:', id);
+
+                fetch(deleteUrl, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    console.log('Delete response status:', response.status);
+                    if (response.ok) {
+                        renderTable();
+                        alert('User deleted successfully');
+                    } else if (response.status === 404) {
+                        alert('User not found.');
+                        renderTable();
+                    } else {
+                        alert('Failed to delete user');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting user:', error);
+                    alert('Error deleting user: ' + error.message);
+                });
             }
         };
 
         window.editUser = function(id) {
+            console.log('Editing user with ID:', id);
             window.location.href = 'useredit?id=' + id;
         };
 
-        initData();
+        console.log('=== Page Loaded ===');
         renderTable();
     </script>
 </body>

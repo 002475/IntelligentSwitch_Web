@@ -6,6 +6,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class PageController {
 
+    /**
+     * 首页入口，重定向到登录页面
+     * @return String 返回登录页面视图名称
+     */
     @GetMapping("/")
     public String index() {
         return "login";
