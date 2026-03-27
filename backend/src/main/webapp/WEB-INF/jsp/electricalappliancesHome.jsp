@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Management - Home</title>
+    <title>Electrical Appliances Management</title>
     <style>
         body {
             margin: 0;
@@ -70,6 +70,26 @@
             width: 80%;
             max-width: 800px;
             margin-bottom: 40px;
+            position: relative;
+        }
+        .add-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+        .add-btn:hover {
+            background-color: #218838;
         }
         table {
             width: 100%;
@@ -119,38 +139,41 @@
 </head>
 <body>
     <div class="header">
-        <h1>User Management</h1>
+        <h1>Electrical Appliances Management</h1>
         <div class="nav-container">
             <div class="nav">
-                <a href="${pageContext.request.contextPath}/appliances">Electrical Appliances</a>
-                <a href="${pageContext.request.contextPath}/home" class="active">Users</a>
+                <a href="${pageContext.request.contextPath}/appliances" class="active">Electrical Appliances</a>
+                <a href="${pageContext.request.contextPath}/home">Users</a>
                 <a href="${pageContext.request.contextPath}/log">Log</a>
             </div>
             <a href="${pageContext.request.contextPath}/login" class="logout-btn">Logout</a>
         </div>
-
     </div>
 
     <div class="container">
-        <h2>User List</h2>
+        <h2>Electrical Appliances</h2>
+        <a href="${pageContext.request.contextPath}/applianceedit" class="add-btn">Add</a>
         <p id="debugInfo" style="color: blue; font-size: 12px;"></p>
-        <table id="userTable">
+        <table id="applianceTable">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Username</th>
-                    <th>Email</th>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody id="userTableBody">
+            <tbody id="applianceTableBody">
             </tbody>
         </table>
-        <div id="emptyMessage" class="empty-message" style="display: none;">No users found.</div>
+        <div id="emptyMessage" class="empty-message" style="display: none;">No appliances found.</div>
     </div>
 
     <script>
-        const API_BASE_URL = 'http://localhost:8080/api/users';
+        const contextPath = '${pageContext.request.contextPath}';
+        const API_BASE_URL = contextPath + '/api/appliances';
 
         console.log('=== Debug Info ===');
         console.log('API Base URL:', API_BASE_URL);
@@ -159,7 +182,7 @@
             const debugInfo = document.getElementById('debugInfo');
             debugInfo.textContent = 'Loading...';
 
-            console.log('\n--- Fetching Users ---');
+            console.log('\n--- Fetching Appliances ---');
             console.log('Request URL:', API_BASE_URL);
 
             fetch(API_BASE_URL, {
@@ -177,42 +200,48 @@
                 }
                 return response.json();
             })
-            .then(users => {
-                console.log('Users data received:', users);
-                console.log('Number of users:', users.length);
+            .then(appliances => {
+                console.log('Appliances data received:', appliances);
+                console.log('Number of appliances:', appliances.length);
 
-                debugInfo.textContent = 'Loaded ' + users.length + ' users successfully!';
+                debugInfo.textContent = 'Loaded ' + appliances.length + ' appliances successfully!';
 
-                const tbody = document.getElementById('userTableBody');
+                const tbody = document.getElementById('applianceTableBody');
                 const emptyMsg = document.getElementById('emptyMessage');
 
                 tbody.innerHTML = '';
                 tbody.style.display = 'table-row-group';
 
-                if (users.length === 0) {
+                if (appliances.length === 0) {
                     emptyMsg.style.display = 'block';
-                    document.getElementById('userTable').style.display = 'none';
-                    console.log('No users in database');
+                    document.getElementById('applianceTable').style.display = 'none';
+                    console.log('No appliances in database');
                     return;
                 } else {
                     emptyMsg.style.display = 'none';
-                    document.getElementById('userTable').style.display = 'table';
+                    document.getElementById('applianceTable').style.display = 'table';
                 }
 
-                users.forEach((user, index) => {
-                    console.log(`Rendering user ${index + 1}:`, user);
+                appliances.forEach((appliance, index) => {
+                    console.log(`Rendering appliance ${index + 1}:`, appliance);
                     const tr = document.createElement('tr');
 
-                    const userId = user.id || '-';
-                    const username = user.username || 'N/A';
-                    const email = user.email || 'N/A';
+                    const applianceId = appliance.id || '-';
+                    const type = appliance.type || 'N/A';
+                    const name = appliance.name || 'N/A';
+                    const location = appliance.location || 'N/A';
+                    const status = appliance.status !== null && appliance.status !== undefined ? appliance.status : false;
 
-                    tr.innerHTML = '<td>' + userId + '</td>' +
-                                   '<td>' + username + '</td>' +
-                                   '<td>' + email + '</td>' +
+                    tr.innerHTML = '<td>' + applianceId + '</td>' +
+                                   '<td>' + type + '</td>' +
+                                   '<td>' + name + '</td>' +
+                                   '<td>' + location + '</td>' +
                                    '<td>' +
-                                   '<button class="action-btn edit-btn" onclick="editUser(' + userId + ')">Edit</button>' +
-                                   '<button class="action-btn delete-btn" onclick="deleteUser(' + userId + ')">Delete</button>' +
+                                   '<button class="action-btn ' + (status ? 'edit-btn' : 'delete-btn') + '" onclick="toggleStatus(' + applianceId + ', ' + status + ')">' + (status ? 'ON' : 'OFF') + '</button>' +
+                                   '</td>' +
+                                   '<td>' +
+                                   '<button class="action-btn edit-btn" onclick="editAppliance(' + applianceId + ')">Edit</button>' +
+                                   '<button class="action-btn delete-btn" onclick="deleteAppliance(' + applianceId + ')">Delete</button>' +
                                    '</td>';
                     tbody.appendChild(tr);
                 });
@@ -222,10 +251,10 @@
             })
             .catch(error => {
                 console.error('=== ERROR ===');
-                console.error('Error fetching users:', error);
+                console.error('Error fetching appliances:', error);
                 debugInfo.textContent = 'Error: ' + error.message;
 
-                let errorMsg = 'Failed to load users\n\n';
+                let errorMsg = 'Failed to load appliances\n\n';
                 errorMsg += 'Error: ' + error.message + '\n\n';
                 errorMsg += 'Please check backend is running on http://localhost:8080';
 
@@ -233,10 +262,10 @@
             });
         }
 
-        window.deleteUser = function(id) {
-            if (confirm('Are you sure you want to delete this user?')) {
+        window.deleteAppliance = function(id) {
+            if (confirm('Are you sure you want to delete this appliance?')) {
                 const deleteUrl = API_BASE_URL + '/' + id;
-                console.log('Deleting user with ID:', id);
+                console.log('Deleting appliance with ID:', id);
 
                 fetch(deleteUrl, {
                     method: 'DELETE'
@@ -245,24 +274,47 @@
                     console.log('Delete response status:', response.status);
                     if (response.ok) {
                         renderTable();
-                        alert('User deleted successfully');
+                        alert('Appliance deleted successfully');
                     } else if (response.status === 404) {
-                        alert('User not found.');
+                        alert('Appliance not found.');
                         renderTable();
                     } else {
-                        alert('Failed to delete user');
+                        alert('Failed to delete appliance');
                     }
                 })
                 .catch(error => {
-                    console.error('Error deleting user:', error);
-                    alert('Error deleting user: ' + error.message);
+                    console.error('Error deleting appliance:', error);
+                    alert('Error deleting appliance: ' + error.message);
                 });
             }
         };
 
-        window.editUser = function(id) {
-            console.log('Editing user with ID:', id);
-            window.location.href = 'useredit?id=' + id;
+        window.toggleStatus = function(id, currentStatus) {
+            const toggleUrl = API_BASE_URL + '/' + id + '/toggle-status';
+            console.log('Toggling status for appliance ID:', id, 'Current:', currentStatus);
+
+            fetch(toggleUrl, {
+                method: 'PATCH'
+            })
+            .then(response => {
+                console.log('Toggle status response:', response.status);
+                if (response.ok) {
+                    renderTable();
+                    const newStatus = !currentStatus;
+                    alert('Appliance turned ' + (newStatus ? 'ON' : 'OFF'));
+                } else {
+                    alert('Failed to toggle status');
+                }
+            })
+            .catch(error => {
+                console.error('Error toggling status:', error);
+                alert('Error: ' + error.message);
+            });
+        };
+
+        window.editAppliance = function(id) {
+            console.log('Editing appliance with ID:', id);
+            window.location.href = contextPath + '/applianceedit?id=' + id;
         };
 
         console.log('=== Page Loaded ===');

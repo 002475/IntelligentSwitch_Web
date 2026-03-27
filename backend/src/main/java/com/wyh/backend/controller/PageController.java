@@ -30,8 +30,23 @@ public class PageController {
         return "home";
     }
 
+    @GetMapping("/appliances")
+    public String appliances() {
+        return "electricalappliancesHome";
+    }
+
+    @GetMapping("/log")
+    public String log() {
+        return "logHome";
+    }
+
     @GetMapping("/useredit")
     public String useredit() {
         return "useredit";
+    }
+
+    @GetMapping("/applianceedit")
+    public String applianceedit() {
+        return "electricalappliancesedit";
     }
 }
