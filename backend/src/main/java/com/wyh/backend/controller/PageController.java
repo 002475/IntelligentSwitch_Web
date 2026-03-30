@@ -49,4 +49,14 @@ public class PageController {
     public String applianceedit() {
         return "electricalappliancesedit";
     }
+
+    @GetMapping("/tasks")
+    public String tasks() {
+        return "tasksHome";
+    }
+
+    @GetMapping("/taskedit")
+    public String taskedit() {
+        return "taskedit";
+    }
 }

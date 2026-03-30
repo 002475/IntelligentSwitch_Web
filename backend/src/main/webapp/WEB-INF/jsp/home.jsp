@@ -123,6 +123,7 @@
         <div class="nav-container">
             <div class="nav">
                 <a href="${pageContext.request.contextPath}/appliances">Electrical Appliances</a>
+                <a href="${pageContext.request.contextPath}/tasks">Tasks</a>
                 <a href="${pageContext.request.contextPath}/home" class="active">Users</a>
                 <a href="${pageContext.request.contextPath}/log">Log</a>
             </div>

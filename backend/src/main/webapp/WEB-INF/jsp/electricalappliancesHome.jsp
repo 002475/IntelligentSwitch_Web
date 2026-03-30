@@ -143,6 +143,7 @@
         <div class="nav-container">
             <div class="nav">
                 <a href="${pageContext.request.contextPath}/appliances" class="active">Electrical Appliances</a>
+                <a href="${pageContext.request.contextPath}/tasks">Tasks</a>
                 <a href="${pageContext.request.contextPath}/home">Users</a>
                 <a href="${pageContext.request.contextPath}/log">Log</a>
             </div>

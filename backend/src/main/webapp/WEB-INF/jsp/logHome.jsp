@@ -85,18 +85,16 @@
         <div class="nav-container">
             <div class="nav">
                 <a href="${pageContext.request.contextPath}/appliances">Electrical Appliances</a>
+                <a href="${pageContext.request.contextPath}/tasks">Tasks</a>
                 <a href="${pageContext.request.contextPath}/home">Users</a>
                 <a href="${pageContext.request.contextPath}/log" class="active">Log</a>
             </div>
             <a href="${pageContext.request.contextPath}/login" class="logout-btn">Logout</a>
         </div>
+
     </div>
 
-    <div class="container">
-        <h2>System Logs</h2>
-        <div class="content-message">
-            <p>Log management interface is under construction.</p>
-        </div>
-    </div>
+
 </body>
 </html>
+
