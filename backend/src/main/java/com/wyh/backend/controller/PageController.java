@@ -35,6 +35,11 @@ public class PageController {
         return "electricalappliancesHome";
     }
 
+    @GetMapping("/tasks")
+    public String tasks() {
+        return "tasksHome";
+    }
+
     @GetMapping("/log")
     public String log() {
         return "logHome";
@@ -48,11 +53,6 @@ public class PageController {
     @GetMapping("/applianceedit")
     public String applianceedit() {
         return "electricalappliancesedit";
-    }
-
-    @GetMapping("/tasks")
-    public String tasks() {
-        return "tasksHome";
     }
 
     @GetMapping("/taskedit")

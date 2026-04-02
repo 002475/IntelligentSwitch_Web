@@ -119,39 +119,42 @@
 </head>
 <body>
     <div class="header">
-        <h1>User Management</h1>
+        <h1>用户管理</h1>
         <div class="nav-container">
             <div class="nav">
-                <a href="${pageContext.request.contextPath}/appliances">Electrical Appliances</a>
-                <a href="${pageContext.request.contextPath}/tasks">Tasks</a>
-                <a href="${pageContext.request.contextPath}/home" class="active">Users</a>
-                <a href="${pageContext.request.contextPath}/log">Log</a>
+                <a href="${pageContext.request.contextPath}/appliances">电器设备</a>
+                <a href="${pageContext.request.contextPath}/tasks">任务</a>
+                <a href="${pageContext.request.contextPath}/home" class="active">用户</a>
+                <a href="${pageContext.request.contextPath}/log">日志</a>
             </div>
-            <a href="${pageContext.request.contextPath}/login" class="logout-btn">Logout</a>
+            <a href="${pageContext.request.contextPath}/login" class="logout-btn">退出登录</a>
         </div>
 
     </div>
 
     <div class="container">
-        <h2>User List</h2>
+        <h2>用户列表</h2>
+        <a href="${pageContext.request.contextPath}/useredit" class="add-btn">添加用户</a>
         <p id="debugInfo" style="color: blue; font-size: 12px;"></p>
         <table id="userTable">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Actions</th>
+                    <th>用户名</th>
+                    <th>邮箱</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
                 </tr>
             </thead>
             <tbody id="userTableBody">
             </tbody>
         </table>
-        <div id="emptyMessage" class="empty-message" style="display: none;">No users found.</div>
+        <div id="emptyMessage" class="empty-message" style="display: none;">暂无用户</div>
     </div>
 
     <script>
-        const API_BASE_URL = 'http://localhost:8080/api/users';
+        const contextPath = '${pageContext.request.contextPath}';
+        const API_BASE_URL = contextPath + '/api/users';
 
         console.log('=== Debug Info ===');
         console.log('API Base URL:', API_BASE_URL);
@@ -207,13 +210,21 @@
                     const userId = user.id || '-';
                     const username = user.username || 'N/A';
                     const email = user.email || 'N/A';
+                    const createdAt = user.createdAt ? new Date(user.createdAt).toLocaleString('zh-CN', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }) : 'N/A';
 
                     tr.innerHTML = '<td>' + userId + '</td>' +
                                    '<td>' + username + '</td>' +
                                    '<td>' + email + '</td>' +
+                                   '<td>' + createdAt + '</td>' +
                                    '<td>' +
-                                   '<button class="action-btn edit-btn" onclick="editUser(' + userId + ')">Edit</button>' +
-                                   '<button class="action-btn delete-btn" onclick="deleteUser(' + userId + ')">Delete</button>' +
+                                   '<button class="action-btn edit-btn" onclick="editUser(' + userId + ')">编辑</button>' +
+                                   '<button class="action-btn delete-btn" onclick="deleteUser(' + userId + ')">删除</button>' +
                                    '</td>';
                     tbody.appendChild(tr);
                 });
@@ -224,18 +235,18 @@
             .catch(error => {
                 console.error('=== ERROR ===');
                 console.error('Error fetching users:', error);
-                debugInfo.textContent = 'Error: ' + error.message;
+                debugInfo.textContent = '错误：' + error.message;
 
-                let errorMsg = 'Failed to load users\n\n';
-                errorMsg += 'Error: ' + error.message + '\n\n';
-                errorMsg += 'Please check backend is running on http://localhost:8080';
+                let errorMsg = '加载用户失败\n\n';
+                errorMsg += '错误：' + error.message + '\n\n';
+                errorMsg += '请检查后端是否运行在 http://localhost:8080';
 
                 alert(errorMsg);
             });
         }
 
         window.deleteUser = function(id) {
-            if (confirm('Are you sure you want to delete this user?')) {
+            if (confirm('确定要删除这个用户吗？')) {
                 const deleteUrl = API_BASE_URL + '/' + id;
                 console.log('Deleting user with ID:', id);
 
@@ -243,21 +254,18 @@
                     method: 'DELETE'
                 })
                 .then(response => {
-                    console.log('Delete response status:', response.status);
                     if (response.ok) {
                         renderTable();
-                        alert('User deleted successfully');
-                    } else if (response.status === 404) {
-                        alert('User not found.');
-                        renderTable();
+                        alert('用户删除成功');
                     } else {
-                        alert('Failed to delete user');
+                        alert('删除失败');
                     }
                 })
                 .catch(error => {
                     console.error('Error deleting user:', error);
-                    alert('Error deleting user: ' + error.message);
+                    alert('删除用户出错：' + error.message);
                 });
+
             }
         };
 

@@ -37,12 +37,12 @@ public class UserController {
     }
 
     /**
-     * 用户注册
-     * @param user 包含注册信息的用户对象，从请求体中获取
-     * @return ResponseEntity<?> 用户名已存在返回 400 Bad Request；注册成功返回 200 OK 和保存后的用户信息
+     * 创建新用户
+     * @param user 包含用户信息的对象，从请求体中获取
+     * @return ResponseEntity<?> 用户名已存在返回 400 Bad Request；创建成功返回 200 OK 和保存后的用户信息
      */
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User user) {
+    @PostMapping
+    public ResponseEntity<?> createUser(@RequestBody User user) {
         if (userService.existsByUsername(user.getUsername())) {
             return ResponseEntity.badRequest().body("Username already exists");
         }
@@ -62,6 +62,9 @@ public class UserController {
                 .map(existingUser -> {
                     existingUser.setUsername(user.getUsername());
                     existingUser.setEmail(user.getEmail());
+                    if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+                        existingUser.setPassword(user.getPassword());
+                    }
                     return ResponseEntity.ok(userService.save(existingUser));
                 })
                 .orElse(ResponseEntity.notFound().build());

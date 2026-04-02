@@ -81,19 +81,41 @@
 </head>
 <body>
     <div class="header">
-        <h1>Log Management</h1>
+        <h1>系统日志</h1>
         <div class="nav-container">
             <div class="nav">
-                <a href="${pageContext.request.contextPath}/appliances">Electrical Appliances</a>
-                <a href="${pageContext.request.contextPath}/tasks">Tasks</a>
-                <a href="${pageContext.request.contextPath}/home">Users</a>
-                <a href="${pageContext.request.contextPath}/log" class="active">Log</a>
+                <a href="${pageContext.request.contextPath}/appliances">电器设备</a>
+                <a href="${pageContext.request.contextPath}/tasks">任务</a>
+                <a href="${pageContext.request.contextPath}/home">用户</a>
+                <a href="${pageContext.request.contextPath}/log" class="active">日志</a>
             </div>
-            <a href="${pageContext.request.contextPath}/login" class="logout-btn">Logout</a>
+            <a href="${pageContext.request.contextPath}/login" class="logout-btn">退出登录</a>
         </div>
 
     </div>
+    <div class="container">
+        <h2>日志列表</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>时间</th>
+                    <th>级别</th>
+                    <th>消息</th>
 
+                </tr>
+            </thead>
+            <tbody>
+                <c:forEach var="log" items="${logs}">
+                    <tr>
+                        <td>${log.timestamp}</td>
+                        <td>${log.level}</td>
+                        <td>${log.message}</td>
+
+                    </tr>
+                </c:forEach>
+            </tbody>
+        </table>
+    </div>
 
 </body>
 </html>

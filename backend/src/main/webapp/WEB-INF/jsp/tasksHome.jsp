@@ -160,38 +160,38 @@
 </head>
 <body>
     <div class="header">
-        <h1>Task Management</h1>
+        <h1>任务管理</h1>
         <div class="nav-container">
             <div class="nav">
-                <a href="${pageContext.request.contextPath}/appliances">Electrical Appliances</a>
-                <a href="${pageContext.request.contextPath}/tasks" class="active">Tasks</a>
-                <a href="${pageContext.request.contextPath}/home">Users</a>
-                <a href="${pageContext.request.contextPath}/log">Log</a>
+                <a href="${pageContext.request.contextPath}/appliances">电器设备</a>
+                <a href="${pageContext.request.contextPath}/tasks" class="active">任务</a>
+                <a href="${pageContext.request.contextPath}/home">用户</a>
+                <a href="${pageContext.request.contextPath}/log">日志</a>
             </div>
-            <a href="${pageContext.request.contextPath}/login" class="logout-btn">Logout</a>
+            <a href="${pageContext.request.contextPath}/login" class="logout-btn">退出登录</a>
         </div>
     </div>
 
     <div class="container">
-        <h2>Task List</h2>
-        <a href="${pageContext.request.contextPath}/taskedit" class="add-btn">Add Task</a>
+        <h2>任务列表</h2>
+        <a href="${pageContext.request.contextPath}/taskedit" class="add-btn">添加任务</a>
         <p id="debugInfo" style="color: blue; font-size: 12px;"></p>
         <table id="taskTable">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Appliance</th>
-                    <th>Type</th>
-                    <th>Execute Time</th>
-                    <th>Repeat</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th>电器</th>
+                    <th>类型</th>
+                    <th>执行时间</th>
+                    <th>重复</th>
+                    <th>状态</th>
+                    <th>操作</th>
                 </tr>
             </thead>
             <tbody id="taskTableBody">
             </tbody>
         </table>
-        <div id="emptyMessage" class="empty-message" style="display: none;">No tasks found.</div>
+        <div id="emptyMessage" class="empty-message" style="display: none;">暂无任务</div>
     </div>
 
     <script>
@@ -227,7 +227,7 @@
             });
 
             if (appliance) {
-                return `${appliance.name} (${appliance.type})`;
+                return (appliance.name || '') + (appliance.location || '');
             }
             return 'Unknown (' + applianceId + ')';
         }
@@ -305,11 +305,11 @@
                                        '<td>' + taskType + '</td>' +
                                        '<td>' + executeTime + '</td>' +
                                        '<td>' + repeat + '</td>' +
-                                       '<td><span class="status-badge ' + (enabled ? 'status-enabled' : 'status-disabled') + '">' + (enabled ? 'Enabled' : 'Disabled') + '</span></td>' +
+                                       '<td><span class="status-badge ' + (enabled ? 'status-enabled' : 'status-disabled') + '">' + (enabled ? '启用' : '禁用') + '</span></td>' +
                                        '<td>' +
-                                       '<button class="action-btn toggle-btn" onclick="toggleTask(' + taskId + ', ' + enabled + ')">' + (enabled ? 'Disable' : 'Enable') + '</button>' +
-                                       '<button class="action-btn edit-btn" onclick="editTask(' + taskId + ')">Edit</button>' +
-                                       '<button class="action-btn delete-btn" onclick="deleteTask(' + taskId + ')">Delete</button>' +
+                                       '<button class="action-btn toggle-btn" onclick="toggleTask(' + taskId + ', ' + enabled + ')">' + (enabled ? '禁用' : '启用') + '</button>' +
+                                       '<button class="action-btn edit-btn" onclick="editTask(' + taskId + ')">编辑</button>' +
+                                       '<button class="action-btn delete-btn" onclick="deleteTask(' + taskId + ')">删除</button>' +
                                        '</td>';
                         tbody.appendChild(tr);
                     });
@@ -318,16 +318,17 @@
                 })
                 .catch(error => {
                     console.error('Error fetching tasks:', error);
-                    debugInfo.textContent = 'Error: ' + error.message;
-                    alert('Failed to load tasks: ' + error.message);
+                    debugInfo.textContent = '错误：' + error.message;
+                    alert('加载任务失败：' + error.message);
                 });
+
             }).catch(error => {
                 console.error('Error loading appliances:', error);
             });
         }
 
         window.deleteTask = function(id) {
-            if (confirm('Are you sure you want to delete this task?')) {
+            if (confirm('确定要删除这个任务吗？')) {
                 const deleteUrl = API_BASE_URL + '/' + id;
                 console.log('Deleting task with ID:', id);
 
@@ -337,17 +338,17 @@
                 .then(response => {
                     if (response.ok) {
                         renderTable();
-                        alert('Task deleted successfully');
+                        alert('任务删除成功');
                     } else if (response.status === 404) {
-                        alert('Task not found.');
+                        alert('任务不存在。');
                         renderTable();
                     } else {
-                        alert('Failed to delete task');
+                        alert('删除失败');
                     }
                 })
                 .catch(error => {
                     console.error('Error deleting task:', error);
-                    alert('Error deleting task: ' + error.message);
+                    alert('删除任务出错：' + error.message);
                 });
             }
         };
@@ -363,14 +364,14 @@
                 if (response.ok) {
                     renderTable();
                     const newStatus = !enabled;
-                    alert('Task ' + (newStatus ? 'enabled' : 'disabled'));
+                    alert('任务已' + (newStatus ? '启用' : '禁用'));
                 } else {
-                    alert('Failed to toggle task');
+                    alert('切换失败');
                 }
             })
             .catch(error => {
                 console.error('Error toggling task:', error);
-                alert('Error: ' + error.message);
+                alert('出错：' + error.message);
             });
         };
 

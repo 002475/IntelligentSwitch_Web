@@ -1,0 +1,162 @@
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"e0df7fa0-b06c-4193-991a-54a70c5df6e9\" name=\"更改\" comment=\"feat(frontend): 将前端数据存储方式从localStorage改为后端API调用&#10;&#10;- 移除localStorage数据模拟，改为调用后端API获取用户数据&#10;- 实现用户删除功能通过API调用替代本地存储操作&#10;- 更新登录页面集成后端用户验证接口&#10;- 实现注册页面通过API向后端提交用户注册信息&#10;- 完善用户编辑页面通过API获取和更新用户信息&#10;- 添加调试信息显示便于开发过程中的问题排查&#10;- 统一前后端数据交互方式，提升系统架构合理性\">\r\n      <change afterPath=\"$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/controller/ElectricalApplianceController.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/model/ElectricalAppliance.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/repository/ElectricalApplianceRepository.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/service/ElectricalApplianceService.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/electricalappliancesHome.jsp\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/electricalappliancesedit.jsp\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/logHome.jsp\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/controller/PageController.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/controller/PageController.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/home.jsp\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/home.jsp\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Class\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\r\n      <map>\r\n        <entry key=\"$PROJECT_DIR$\" value=\"temp\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;customColor&quot;: &quot;&quot;,\r\n  &quot;associatedIndex&quot;: 6\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"3BNj7GkeOdcs3bvD4CqSXTSFwys\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,\r\n    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;master&quot;,\r\n    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,\r\n    &quot;last_opened_file_path&quot;: &quot;D:/项目/IntelligentSwitch_Web&quot;,\r\n    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.language.and.region&quot;\r\n  }\r\n}</component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"CopyFile.RECENT_KEYS\">\r\n      <recent name=\"D:\\项目\\IntelligentSwitch_Web\\backend\\src\\main\\resources\\static\\images\" />\r\n      <recent name=\"D:\\项目\\IntelligentSwitch_Web\\backend\\src\\main\\webapp\\WEB-INF\\jsp\" />\r\n      <recent name=\"D:\\项目\\IntelligentSwitch_Web\\backend\\src\\main\\resources\\static\\static\\images\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"RunManager\">\r\n    <configuration name=\"BackendApplication\" type=\"SpringBootApplicationConfigurationType\" factoryName=\"Spring Boot\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"FRAME_DEACTIVATION_UPDATE_POLICY\" value=\"UnknownPolicyInFreeMode\" />\r\n      <module name=\"backend\" />\r\n      <option name=\"SPRING_BOOT_MAIN_CLASS\" value=\"com.wyh.backend.BackendApplication\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"com.wyh.backend.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Spring Boot.BackendApplication\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.32098.37\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"默认任务\">\r\n      <changelist id=\"e0df7fa0-b06c-4193-991a-54a70c5df6e9\" name=\"更改\" comment=\"\" />\r\n      <created>1774336254039</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1774336254039</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"feat(frontend): 将前端数据存储方式从localStorage改为后端API调用&#10;&#10;- 移除localStorage数据模拟，改为调用后端API获取用户数据&#10;- 实现用户删除功能通过API调用替代本地存储操作&#10;- 更新登录页面集成后端用户验证接口&#10;- 实现注册页面通过API向后端提交用户注册信息&#10;- 完善用户编辑页面通过API获取和更新用户信息&#10;- 添加调试信息显示便于开发过程中的问题排查&#10;- 统一前后端数据交互方式，提升系统架构合理性\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1774526286953</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1774526286953</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"2\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State>\r\n              <option name=\"FILTERS\">\r\n                <map>\r\n                  <entry key=\"branch\">\r\n                    <value>\r\n                      <list>\r\n                        <option value=\"master\" />\r\n                      </list>\r\n                    </value>\r\n                  </entry>\r\n                </map>\r\n              </option>\r\n            </State>\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"版本4：增加了数据库依赖，但是问题没解决：1.并没有看到用户信息存入数据库；2.还是无法显示用户信息；3.还是无法看到修改界面\" />\r\n    <MESSAGE value=\"feat(frontend): 将前端数据存储方式从localStorage改为后端API调用&#10;&#10;- 移除localStorage数据模拟，改为调用后端API获取用户数据&#10;- 实现用户删除功能通过API调用替代本地存储操作&#10;- 更新登录页面集成后端用户验证接口&#10;- 实现注册页面通过API向后端提交用户注册信息&#10;- 完善用户编辑页面通过API获取和更新用户信息&#10;- 添加调试信息显示便于开发过程中的问题排查&#10;- 统一前后端数据交互方式，提升系统架构合理性\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"feat(frontend): 将前端数据存储方式从localStorage改为后端API调用&#10;&#10;- 移除localStorage数据模拟，改为调用后端API获取用户数据&#10;- 实现用户删除功能通过API调用替代本地存储操作&#10;- 更新登录页面集成后端用户验证接口&#10;- 实现注册页面通过API向后端提交用户注册信息&#10;- 完善用户编辑页面通过API获取和更新用户信息&#10;- 添加调试信息显示便于开发过程中的问题排查&#10;- 统一前后端数据交互方式，提升系统架构合理性\" />\r\n  </component>\r\n  <component name=\"XSLT-Support.FileAssociations.UIState\">\r\n    <expand />\r\n    <select />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 4221e27608ffed0ca78f0842fda1fcee5aa874a5)
++++ b/.idea/workspace.xml	(date 1774948917143)
+@@ -4,17 +4,18 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="e0df7fa0-b06c-4193-991a-54a70c5df6e9" name="更改" comment="feat(frontend): 将前端数据存储方式从localStorage改为后端API调用&#10;&#10;- 移除localStorage数据模拟，改为调用后端API获取用户数据&#10;- 实现用户删除功能通过API调用替代本地存储操作&#10;- 更新登录页面集成后端用户验证接口&#10;- 实现注册页面通过API向后端提交用户注册信息&#10;- 完善用户编辑页面通过API获取和更新用户信息&#10;- 添加调试信息显示便于开发过程中的问题排查&#10;- 统一前后端数据交互方式，提升系统架构合理性">
+-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/controller/ElectricalApplianceController.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/model/ElectricalAppliance.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/repository/ElectricalApplianceRepository.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/service/ElectricalApplianceService.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/electricalappliancesHome.jsp" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/electricalappliancesedit.jsp" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/logHome.jsp" afterDir="false" />
++    <list default="true" id="e0df7fa0-b06c-4193-991a-54a70c5df6e9" name="更改" comment="feat(task): 添加定时任务管理功能&#10;&#10;- 集成Quartz调度框架并配置内存存储&#10;- 创建任务模型实体和数据访问层&#10;- 实现任务服务层包括创建、更新、删除和调度功能&#10;- 添加任务控制器提供REST API接口&#10;- 开发任务管理前端页面包括列表和编辑界面&#10;- 在导航菜单中添加任务管理入口&#10;- 实现任务执行作业类处理定时操作&#10;- 配置调度器自动启动和依赖注入支持">
++      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/controller/TaskController.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/model/Task.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/repository/TaskRepository.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/service/TaskService.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/taskedit.jsp" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/tasksHome.jsp" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/controller/PageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/controller/PageController.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/electricalappliancesHome.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/electricalappliancesHome.jsp" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/home.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/home.jsp" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/logHome.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/logHome.jsp" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -24,6 +25,7 @@
+   <component name="FileTemplateManagerImpl">
+     <option name="RECENT_TEMPLATES">
+       <list>
++        <option value="Interface" />
+         <option value="Class" />
+       </list>
+     </option>
+@@ -31,35 +33,65 @@
+   <component name="Git.Settings">
+     <option name="RECENT_BRANCH_BY_REPOSITORY">
+       <map>
+-        <entry key="$PROJECT_DIR$" value="temp" />
++        <entry key="$PROJECT_DIR$" value="master" />
+       </map>
+     </option>
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
++    <option name="RESET_MODE" value="HARD" />
++  </component>
++  <component name="GitToolBoxStore">
++    <option name="recentBranches">
++      <RecentBranches>
++        <option name="branchesForRepo">
++          <list>
++            <RecentBranchesForRepo>
++              <option name="branches">
++                <list>
++                  <RecentBranch>
++                    <option name="branchName" value="temp2" />
++                    <option name="lastUsedInstant" value="1774946317" />
++                  </RecentBranch>
++                  <RecentBranch>
++                    <option name="branchName" value="master" />
++                    <option name="lastUsedInstant" value="1774946316" />
++                  </RecentBranch>
++                </list>
++              </option>
++              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
++            </RecentBranchesForRepo>
++          </list>
++        </option>
++      </RecentBranches>
++    </option>
+   </component>
+   <component name="ProjectColorInfo">{
+   &quot;customColor&quot;: &quot;&quot;,
+   &quot;associatedIndex&quot;: 6
+ }</component>
+   <component name="ProjectId" id="3BNj7GkeOdcs3bvD4CqSXTSFwys" />
++  <component name="ProjectLevelVcsManager">
++    <ConfirmationsSetting value="2" id="Add" />
++  </component>
+   <component name="ProjectViewState">
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent">{
+-  &quot;keyToString&quot;: {
+-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+-    &quot;last_opened_file_path&quot;: &quot;D:/项目/IntelligentSwitch_Web&quot;,
+-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.language.and.region&quot;
++  <component name="PropertiesComponent"><![CDATA[{
++  "keyToString": {
++    "ModuleVcsDetector.initialDetectionPerformed": "true",
++    "RunOnceActivity.ShowReadmeOnStart": "true",
++    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
++    "RunOnceActivity.cidr.known.project.marker": "true",
++    "RunOnceActivity.git.unshallow": "true",
++    "RunOnceActivity.readMode.enableVisualFormatting": "true",
++    "cidr.known.project.marker": "true",
++    "git-widget-placeholder": "temp2",
++    "kotlin-language-version-configured": "true",
++    "last_opened_file_path": "D:/项目/IntelligentSwitch_Web",
++    "settings.editor.selected.configurable": "preferences.language.and.region",
++    "vcs.patch.to.clipboard": "true"
+   }
+-}</component>
++}]]></component>
+   <component name="RecentsManager">
+     <key name="CopyFile.RECENT_KEYS">
+       <recent name="D:\项目\IntelligentSwitch_Web\backend\src\main\resources\static\images" />
+@@ -111,7 +143,23 @@
+       <option name="project" value="LOCAL" />
+       <updated>1774526286953</updated>
+     </task>
+-    <option name="localTasksCounter" value="2" />
++    <task id="LOCAL-00002" summary="feat(electrical-appliance): 添加电气设备管理模块&#10;&#10;- 创建电气设备实体类，包含ID、类型、名称、位置、状态等属性&#10;- 实现电气设备控制器，提供增删改查和状态切换等REST API接口&#10;- 开发电气设备服务层，封装业务逻辑和数据访问操作&#10;- 构建电气设备数据访问层，实现JPA数据库操作&#10;- 创建电气设备管理页面，展示设备列表和操作按钮&#10;- 开发电气设备编辑页面，支持新增和修改设备信息&#10;- 添加系统日志页面，统一导航栏样式&#10;- 更新主页导航栏，集成电器设备管理入口&#10;- 在PageController中添加新的页面路由映射">
++      <option name="closed" value="true" />
++      <created>1774603181035</created>
++      <option name="number" value="00002" />
++      <option name="presentableId" value="LOCAL-00002" />
++      <option name="project" value="LOCAL" />
++      <updated>1774603181035</updated>
++    </task>
++    <task id="LOCAL-00003" summary="feat(task): 添加定时任务管理功能&#10;&#10;- 集成Quartz调度框架并配置内存存储&#10;- 创建任务模型实体和数据访问层&#10;- 实现任务服务层包括创建、更新、删除和调度功能&#10;- 添加任务控制器提供REST API接口&#10;- 开发任务管理前端页面包括列表和编辑界面&#10;- 在导航菜单中添加任务管理入口&#10;- 实现任务执行作业类处理定时操作&#10;- 配置调度器自动启动和依赖注入支持">
++      <option name="closed" value="true" />
++      <created>1774854832443</created>
++      <option name="number" value="00003" />
++      <option name="presentableId" value="LOCAL-00003" />
++      <option name="project" value="LOCAL" />
++      <updated>1774854832443</updated>
++    </task>
++    <option name="localTasksCounter" value="4" />
+     <servers />
+   </component>
+   <component name="Vcs.Log.Tabs.Properties">
+@@ -140,7 +188,9 @@
+   <component name="VcsManagerConfiguration">
+     <MESSAGE value="版本4：增加了数据库依赖，但是问题没解决：1.并没有看到用户信息存入数据库；2.还是无法显示用户信息；3.还是无法看到修改界面" />
+     <MESSAGE value="feat(frontend): 将前端数据存储方式从localStorage改为后端API调用&#10;&#10;- 移除localStorage数据模拟，改为调用后端API获取用户数据&#10;- 实现用户删除功能通过API调用替代本地存储操作&#10;- 更新登录页面集成后端用户验证接口&#10;- 实现注册页面通过API向后端提交用户注册信息&#10;- 完善用户编辑页面通过API获取和更新用户信息&#10;- 添加调试信息显示便于开发过程中的问题排查&#10;- 统一前后端数据交互方式，提升系统架构合理性" />
+-    <option name="LAST_COMMIT_MESSAGE" value="feat(frontend): 将前端数据存储方式从localStorage改为后端API调用&#10;&#10;- 移除localStorage数据模拟，改为调用后端API获取用户数据&#10;- 实现用户删除功能通过API调用替代本地存储操作&#10;- 更新登录页面集成后端用户验证接口&#10;- 实现注册页面通过API向后端提交用户注册信息&#10;- 完善用户编辑页面通过API获取和更新用户信息&#10;- 添加调试信息显示便于开发过程中的问题排查&#10;- 统一前后端数据交互方式，提升系统架构合理性" />
++    <MESSAGE value="feat(electrical-appliance): 添加电气设备管理模块&#10;&#10;- 创建电气设备实体类，包含ID、类型、名称、位置、状态等属性&#10;- 实现电气设备控制器，提供增删改查和状态切换等REST API接口&#10;- 开发电气设备服务层，封装业务逻辑和数据访问操作&#10;- 构建电气设备数据访问层，实现JPA数据库操作&#10;- 创建电气设备管理页面，展示设备列表和操作按钮&#10;- 开发电气设备编辑页面，支持新增和修改设备信息&#10;- 添加系统日志页面，统一导航栏样式&#10;- 更新主页导航栏，集成电器设备管理入口&#10;- 在PageController中添加新的页面路由映射" />
++    <MESSAGE value="feat(task): 添加定时任务管理功能&#10;&#10;- 集成Quartz调度框架并配置内存存储&#10;- 创建任务模型实体和数据访问层&#10;- 实现任务服务层包括创建、更新、删除和调度功能&#10;- 添加任务控制器提供REST API接口&#10;- 开发任务管理前端页面包括列表和编辑界面&#10;- 在导航菜单中添加任务管理入口&#10;- 实现任务执行作业类处理定时操作&#10;- 配置调度器自动启动和依赖注入支持" />
++    <option name="LAST_COMMIT_MESSAGE" value="feat(task): 添加定时任务管理功能&#10;&#10;- 集成Quartz调度框架并配置内存存储&#10;- 创建任务模型实体和数据访问层&#10;- 实现任务服务层包括创建、更新、删除和调度功能&#10;- 添加任务控制器提供REST API接口&#10;- 开发任务管理前端页面包括列表和编辑界面&#10;- 在导航菜单中添加任务管理入口&#10;- 实现任务执行作业类处理定时操作&#10;- 配置调度器自动启动和依赖注入支持" />
+   </component>
+   <component name="XSLT-Support.FileAssociations.UIState">
+     <expand />

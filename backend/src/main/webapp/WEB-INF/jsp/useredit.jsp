@@ -67,17 +67,22 @@
 </head>
 <body>
     <div class="edit-container">
-        <h2>Edit User</h2>
+        <h2 id="pageHeader">添加用户</h2>
         <form class="edit-form" id="editForm">
             <input type="hidden" id="userId">
-            <label for="username">Username:</label>
-            <input type="text" id="username" required>
-            <label for="email">Email:</label>
-            <input type="email" id="email" required>
-            
+
+            <label for="username">用户名：</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="email">邮箱：</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="password">密码：</label>
+            <input type="password" id="password" name="password" required>
+
             <div class="btn-group">
-                <button type="button" class="cancel-btn" onclick="window.location.href='${pageContext.request.contextPath}/home'">Cancel</button>
-                <button type="submit" class="save-btn">Save Changes</button>
+                <button type="button" class="cancel-btn" onclick="window.location.href='${pageContext.request.contextPath}/home'">取消</button>
+                <button type="submit" class="save-btn">保存</button>
             </div>
         </form>
     </div>
@@ -97,88 +102,125 @@
 
             console.log('User ID from URL:', userId);
 
-            if (!userId) {
-                alert('Invalid user ID.');
-                window.location.href = contextPath + '/home';
-                return;
+            if (userId) {
+                isEditMode = true;
+                document.getElementById('pageHeader').textContent = '编辑用户';
+
+                const fetchUrl = API_BASE_URL + '/' + userId;
+                console.log('Fetching user from:', fetchUrl);
+
+                fetch(fetchUrl)
+                    .then(response => {
+                        console.log('Response status:', response.status);
+                        if (!response.ok) {
+                            throw new Error('用户不存在');
+                        }
+                        return response.json();
+                    })
+                    .then(user => {
+                        console.log('User data loaded:', user);
+                        document.getElementById('userId').value = user.id;
+                        document.getElementById('username').value = user.username;
+                        document.getElementById('email').value = user.email;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching user:', error);
+                        alert('用户不存在。错误：' + error.message);
+                        window.location.href = contextPath + '/home';
+                    });
+            } else {
+                isEditMode = false;
+                document.getElementById('pageHeader').textContent = '添加用户';
             }
-
-            const fetchUrl = API_BASE_URL + '/' + userId;
-            console.log('Fetching user from:', fetchUrl);
-
-            fetch(fetchUrl)
-                .then(response => {
-                    console.log('Response status:', response.status);
-                    if (!response.ok) {
-                        throw new Error('User not found');
-                    }
-                    return response.json();
-                })
-                .then(user => {
-                    console.log('User data loaded:', user);
-                    document.getElementById('userId').value = user.id;
-                    document.getElementById('username').value = user.username;
-                    document.getElementById('email').value = user.email;
-                })
-                .catch(error => {
-                    console.error('Error fetching user:', error);
-                    alert('User not found. Error: ' + error.message);
-                    window.location.href = contextPath + '/home';
-                });
         });
 
         document.getElementById('editForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
             const userId = document.getElementById('userId').value;
-            const newUsername = document.getElementById('username').value.trim();
-            const newEmail = document.getElementById('email').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
 
-            if (!newUsername || !newEmail) {
-                alert('Username and Email cannot be empty.');
+            if (!username || !email || !password) {
+                alert('请填写完整信息。');
                 return;
             }
 
             const usernameRegex = /^[\u4e00-\u9fa5a-zA-Z0-9]+$/;
-            if (!usernameRegex.test(newUsername)) {
-                alert('Username can only contain Chinese characters, letters, and numbers.');
+            if (!usernameRegex.test(username)) {
+                alert('用户名只能包含中文字符、字母和数字。');
                 return;
             }
 
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(newEmail)) {
-                alert('Please enter a valid email address.');
+            if (!emailRegex.test(email)) {
+                alert('请输入有效的邮箱地址。');
                 return;
             }
 
-            const updateUrl = API_BASE_URL + '/' + userId;
-            console.log('Updating user at:', updateUrl);
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+            if (!passwordRegex.test(password)) {
+                alert('密码必须包含至少一个小写字母、一个大写字母和一个数字，并且长度至少为 8 位。');
+                return;
+            }
 
-            fetch(updateUrl, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    username: newUsername,
-                    email: newEmail
+            if (userId) {
+                const updateUrl = API_BASE_URL + '/' + userId;
+                console.log('Updating user at:', updateUrl);
+
+                fetch(updateUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        email: email,
+                        password: password
+                    })
                 })
-            })
-            .then(response => {
-                console.log('Update response status:', response.status);
-                if (response.ok) {
-                    alert('User updated successfully!');
-                    window.location.href = contextPath + '/home';
-                } else if (response.status === 404) {
-                    alert('User not found.');
-                } else {
-                    alert('Update failed. Please try again.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Update failed. Please try again.');
-            });
+                .then(response => {
+                    if (response.ok) {
+                        alert('用户更新成功！');
+                        window.location.href = contextPath + '/home';
+                    } else {
+                        alert('更新失败，请重试。');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('更新失败，请重试。');
+                });
+            } else {
+                const createUrl = API_BASE_URL;
+                console.log('Creating user at:', createUrl);
+
+                fetch(createUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        email: email,
+                        password: password
+                    })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('用户添加成功！');
+                        window.location.href = contextPath + '/home';
+                    } else {
+                        alert('添加失败，请重试。');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('添加失败，请重试。');
+                });
+            }
+
         });
     </script>
 </body>

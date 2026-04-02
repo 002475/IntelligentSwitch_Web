@@ -65,20 +65,20 @@
 </head>
 <body>
     <div class="register-container">
-        <h2>Register</h2>
+        <h2>注册</h2>
         <form class="register-form" id="registerForm">
-            <label for="username">Username:</label>
+            <label for="username">用户名:</label>
             <input type="text" id="username" name="username" required>
-            <label for="email">Email:</label>
+            <label for="email">邮箱:</label>
             <input type="email" id="email" name="email" required>
-            <label for="password">Password:</label>
+            <label for="password">密码:</label>
             <input type="password" id="password" name="password" required>
-            <label for="confirm_password">Confirm Password:</label>
+            <label for="confirm_password">确认密码:</label>
             <input type="password" id="confirm_password" name="confirm_password" required>
-            <button type="submit">Register</button>
+            <button type="submit">注册</button>
         </form>
         <div class="toggle-link">
-            Already have an account? <a href="${pageContext.request.contextPath}/login">Login here</a>
+            已有账号？<a href="${pageContext.request.contextPath}/login">立即登录</a>
         </div>
     </div>
 
@@ -86,66 +86,58 @@
         document.getElementById('registerForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
-            const username = document.getElementById('username').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm_password').value;
+            const formData = {
+                username: document.getElementById('username').value.trim(),
+                password: document.getElementById('password').value,
+                confirmPassword: document.getElementById('confirmPassword').value
+            };
 
             // 1. 验证用户名：只能包含汉字、字母、数字
             const usernameRegex = /^[\u4e00-\u9fa5a-zA-Z0-9]+$/;
-            if (!usernameRegex.test(username)) {
-                alert('Username can only contain Chinese characters, letters, and numbers.');
+            if (!usernameRegex.test(formData.username)) {
+                alert('用户名只能包含汉字、字母和数字。');
                 return;
             }
 
-            // 2. 验证邮箱格式
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                alert('Please enter a valid email address.');
-                return;
-            }
-
-            // 3. 验证密码：必须同时包含字母和数字
-            const hasLetter = /[a-zA-Z]/.test(password);
-            const hasNumber = /[0-9]/.test(password);
+            // 2. 验证密码：必须同时包含字母和数字
+            const hasLetter = /[a-zA-Z]/.test(formData.password);
+            const hasNumber = /[0-9]/.test(formData.password);
             if (!hasLetter || !hasNumber) {
-                alert('Password must contain both letters and numbers.');
+                alert('密码必须同时包含字母和数字。');
                 return;
             }
 
-            // 4. 验证确认密码
-            if (password !== confirmPassword) {
-                alert('Passwords do not match.');
+            // 3. 验证确认密码
+            if (formData.password !== formData.confirmPassword) {
+                alert('两次输入的密码不一致！');
                 return;
             }
 
-            // 发送请求到后端 API
-            fetch('${pageContext.request.contextPath}/api/users/register', {
+            const contextPath = '${pageContext.request.contextPath}';
+            fetch(contextPath + '/api/users/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    username: username,
-                    email: email,
-                    password: password
+                    username: formData.username,
+                    password: formData.password
                 })
             })
-            .then(response => {
-                if (response.ok) {
-                    alert('Registration successful!');
-                    window.location.href = '${pageContext.request.contextPath}/login';
-                } else if (response.status === 400) {
-                    return response.text().then(text => {
-                        throw new Error(text);
-                    });
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('注册成功！即将跳转到登录页面...');
+                    setTimeout(() => {
+                        window.location.href = contextPath + '/login';
+                    }, 1500);
                 } else {
-                    throw new Error('Registration failed');
+                    alert('注册失败：' + (data.message || '未知错误'));
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert(error.message || 'Registration failed. Please try again.');
+                alert('注册失败，请稍后再试。');
             });
         });
     </script>

@@ -65,17 +65,17 @@
 </head>
 <body>
     <div class="login-container">
-        <h2>Login</h2>
+        <h2>登录</h2>
         <!-- 移除了 action 和 method，改为由 JS 处理 -->
         <form class="login-form" id="loginForm">
-            <label for="username">Username:</label>
+            <label for="username">用户名:</label>
             <input type="text" id="username" name="username" required>
-            <label for="password">Password:</label>
+            <label for="password">密码:</label>
             <input type="password" id="password" name="password" required>
-            <button type="submit">Login</button>
+            <button type="submit">登录</button>
         </form>
         <div class="toggle-link">
-            Don't have an account? <a href="${pageContext.request.contextPath}/register">Register here</a>
+            还没有账号？<a href="${pageContext.request.contextPath}/register">立即注册</a>
         </div>
     </div>
 
@@ -87,7 +87,7 @@
             const password = document.getElementById('password').value.trim();
 
             if (!username || !password) {
-                alert('Please enter username and password.');
+                alert('请输入用户名和密码。');
                 return;
             }
 
@@ -107,15 +107,15 @@
                         const userByName = users.find(u => u.username === username);
                         if (userByName) {
                             // 密码不匹配时的处理
-                            alert('Invalid password.');
+                            alert('密码错误。');
                         } else {
-                            alert('Account does not exist. Please register first.');
+                            alert('账号不存在，请先注册。');
                         }
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    alert('Login failed. Please try again.');
+                    console.error('Login error:', error);
+                    alert('登录失败：' + error.message);
                 });
         });
     </script>

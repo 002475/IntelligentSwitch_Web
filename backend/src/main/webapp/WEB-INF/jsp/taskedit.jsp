@@ -141,75 +141,75 @@
 </head>
 <body>
     <div class="edit-container">
-        <h2 id="pageHeader">Add Task</h2>
+        <h2 id="pageHeader">添加任务</h2>
         <div class="form-title" id="formTitle" style="display: none;"></div>
         <form class="edit-form" id="editForm">
             <input type="hidden" id="taskId">
 
-            <label for="applianceSelect">Electrical Appliance:</label>
+            <label for="applianceSelect">电器设备：</label>
             <select id="applianceSelect" required>
-                <option value="" disabled selected>Select Appliance</option>
+                <option value="" disabled selected>请选择电器</option>
             </select>
 
-            <label for="taskType">Task Type:</label>
+            <label for="taskType">任务类型：</label>
             <select id="taskType" required>
-                <option value="" disabled selected>Select Action</option>
-                <option value="ON">Turn ON</option>
-                <option value="OFF">Turn OFF</option>
+                <option value="" disabled selected>请选择操作</option>
+                <option value="ON">开启</option>
+                <option value="OFF">关闭</option>
             </select>
 
-            <label for="executeDate">Execute Date:</label>
+            <label for="executeDate">执行日期：</label>
             <input type="date" id="executeDate" required>
 
-            <label for="executeTime">Execute Time:</label>
+            <label for="executeTime">执行时间：</label>
             <div class="time-input-group">
                 <input type="time" id="executeTime" required>
             </div>
 
             <div class="checkbox-group">
                 <input type="checkbox" id="repeatCheckbox">
-                <label for="repeatCheckbox">Repeat Task</label>
+                <label for="repeatCheckbox">重复任务</label>
             </div>
 
             <div class="repeat-days-group" id="repeatDaysGroup">
                 <div class="day-checkbox">
                     <input type="checkbox" id="dayMon" value="MON">
-                    <label for="dayMon">Mon</label>
+                    <label for="dayMon">一</label>
                 </div>
                 <div class="day-checkbox">
                     <input type="checkbox" id="dayTue" value="TUE">
-                    <label for="dayTue">Tue</label>
+                    <label for="dayTue">二</label>
                 </div>
                 <div class="day-checkbox">
                     <input type="checkbox" id="dayWed" value="WED">
-                    <label for="dayWed">Wed</label>
+                    <label for="dayWed">三</label>
                 </div>
                 <div class="day-checkbox">
                     <input type="checkbox" id="dayThu" value="THU">
-                    <label for="dayThu">Thu</label>
+                    <label for="dayThu">四</label>
                 </div>
                 <div class="day-checkbox">
                     <input type="checkbox" id="dayFri" value="FRI">
-                    <label for="dayFri">Fri</label>
+                    <label for="dayFri">五</label>
                 </div>
                 <div class="day-checkbox">
                     <input type="checkbox" id="daySat" value="SAT">
-                    <label for="daySat">Sat</label>
+                    <label for="daySat">六</label>
                 </div>
                 <div class="day-checkbox">
                     <input type="checkbox" id="daySun" value="SUN">
-                    <label for="daySun">Sun</label>
+                    <label for="daySun">日</label>
                 </div>
             </div>
 
             <div class="checkbox-group">
                 <input type="checkbox" id="enabledCheckbox" checked>
-                <label for="enabledCheckbox">Enabled</label>
+                <label for="enabledCheckbox">启用</label>
             </div>
 
             <div class="btn-group">
-                <button type="button" class="cancel-btn" onclick="window.location.href='${pageContext.request.contextPath}/tasks'">Cancel</button>
-                <button type="submit" class="save-btn">Save</button>
+                <button type="button" class="cancel-btn" onclick="window.location.href='${pageContext.request.contextPath}/tasks'">取消</button>
+                <button type="submit" class="save-btn">保存</button>
             </div>
         </form>
     </div>
@@ -247,11 +247,11 @@
 
             if (taskId) {
                 isEditMode = true;
-                document.getElementById('pageHeader').textContent = 'Edit Task';
+                document.getElementById('pageHeader').textContent = '编辑任务';
                 loadTask(taskId);
             } else {
                 isEditMode = false;
-                document.getElementById('pageHeader').textContent = 'Add Task';
+                document.getElementById('pageHeader').textContent = '添加任务';
                 setDefaultDateTime();
             }
         });
@@ -278,14 +278,14 @@
                     appliances.forEach(appliance => {
                         const option = document.createElement('option');
                         option.value = appliance.id;
-                        option.textContent = `${appliance.name} (${appliance.type}) - ${appliance.location}`;
+                        option.textContent = (appliance.name || '') + (appliance.location || '');
                         select.appendChild(option);
                     });
                     console.log('Appliances loaded:', appliances.length);
                 })
                 .catch(error => {
                     console.error('Error loading appliances:', error);
-                    alert('Failed to load appliances');
+                    alert('加载电器列表失败');
                 });
         }
 
@@ -331,7 +331,7 @@
                 })
                 .catch(error => {
                     console.error('Error fetching task:', error);
-                    alert('Task not found. Error: ' + error.message);
+                    alert('任务不存在。错误：' + error.message);
                     window.location.href = contextPath + '/tasks';
                 });
         }
@@ -342,14 +342,26 @@
 
             if (repeat && repeatDays && repeatDays.length > 0) {
                 const daysMap = {
-                    'MON': '1', 'TUE': '2', 'WED': '3', 'THU': '4',
-                    'FRI': '5', 'SAT': '6', 'SUN': '7'
+                    'SUN': '1', 'MON': '2', 'TUE': '3', 'WED': '4',
+                    'THU': '5', 'FRI': '6', 'SAT': '7'
                 };
-                const dayNumbers = repeatDays.map(day => daysMap[day]).sort().join(',');
-                return `${second} ${minute} ${hour} ? * ${dayNumbers}`;
-            } else {
-                return `${second} ${minute} ${hour} * * ?`;
+
+                const dayNumbers = [];
+                for (let i = 0; i < repeatDays.length; i++) {
+                    const day = repeatDays[i].trim().toUpperCase();
+                    if (daysMap[day]) {
+                        dayNumbers.push(daysMap[day]);
+                    }
+                }
+
+                if (dayNumbers.length > 0) {
+                    dayNumbers.sort((a, b) => parseInt(a) - parseInt(b));
+                    return second + ' ' + minute + ' ' + hour + ' ? * ' + dayNumbers.join(',');
+                }
             }
+
+            // 非重复任务：每天相同时间执行
+            return second + ' ' + minute + ' ' + hour + ' * * ?';
         }
 
         document.getElementById('editForm').addEventListener('submit', function(event) {
@@ -364,17 +376,17 @@
             const enabled = document.getElementById('enabledCheckbox').checked;
 
             if (!applianceId) {
-                alert('Please select an electrical appliance.');
+                alert('请选择电器设备。');
                 return;
             }
 
             if (!taskType) {
-                alert('Please select a task type.');
+                alert('请选择任务类型。');
                 return;
             }
 
             if (!executeDate || !executeTime) {
-                alert('Please set execute date and time.');
+                alert('请设置执行日期和时间。');
                 return;
             }
 
@@ -388,19 +400,24 @@
                     }
                 });
                 if (selectedDays.length === 0) {
-                    alert('Please select at least one day for repeat task.');
+                    alert('请至少选择一天作为重复任务的执行日期。');
                     return;
                 }
                 repeatDays = selectedDays.join(',');
             }
 
-            const executeDateTime = new Date(`${executeDate}T${executeTime}:00`);
-            const cronExpression = getCronExpression(executeDateTime, executeTime, repeat, repeat ? repeatDays : null);
+            // 直接使用用户选择的日期和时间，避免时区转换问题
+            const formattedDateTime = executeDate + ' ' + executeTime + ':00';
+
+            const cronExpression = getCronExpression(null, executeTime, repeat, repeat ? repeatDays : null);
+
+            console.log('Execute DateTime:', formattedDateTime);
+            console.log('Cron Expression:', cronExpression);
 
             const taskData = {
                 applianceId: applianceId,
                 taskType: taskType,
-                executeTime: executeDateTime.toISOString().slice(0, 16),
+                executeTime: formattedDateTime,
                 cronExpression: cronExpression,
                 repeat: repeat,
                 enabled: enabled
@@ -424,17 +441,17 @@
                 .then(response => {
                     console.log('Update response status:', response.status);
                     if (response.ok) {
-                        alert('Task updated successfully!');
+                        alert('任务更新成功！');
                         window.location.href = contextPath + '/tasks';
                     } else if (response.status === 404) {
-                        alert('Task not found.');
+                        alert('任务不存在。');
                     } else {
-                        alert('Update failed. Please try again.');
+                        alert('更新失败，请重试。');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Update failed. Please try again.');
+                    alert('更新失败，请重试。');
                 });
             } else {
                 console.log('Creating new task');
@@ -449,15 +466,15 @@
                 .then(response => {
                     console.log('Create response status:', response.status);
                     if (response.ok) {
-                        alert('Task added successfully!');
+                        alert('任务添加成功！');
                         window.location.href = contextPath + '/tasks';
                     } else {
-                        alert('Failed to add task. Please try again.');
+                        alert('添加失败，请重试。');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Failed to add task. Please try again.');
+                    alert('添加失败，请重试。');
                 });
             }
         });

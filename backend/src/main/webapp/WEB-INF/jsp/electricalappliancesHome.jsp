@@ -139,31 +139,31 @@
 </head>
 <body>
     <div class="header">
-        <h1>Electrical Appliances Management</h1>
+        <h1>电器设备管理</h1>
         <div class="nav-container">
             <div class="nav">
-                <a href="${pageContext.request.contextPath}/appliances" class="active">Electrical Appliances</a>
-                <a href="${pageContext.request.contextPath}/tasks">Tasks</a>
-                <a href="${pageContext.request.contextPath}/home">Users</a>
-                <a href="${pageContext.request.contextPath}/log">Log</a>
+                <a href="${pageContext.request.contextPath}/appliances" class="active">电器设备</a>
+                <a href="${pageContext.request.contextPath}/tasks">任务</a>
+                <a href="${pageContext.request.contextPath}/home">用户</a>
+                <a href="${pageContext.request.contextPath}/log">日志</a>
             </div>
-            <a href="${pageContext.request.contextPath}/login" class="logout-btn">Logout</a>
+            <a href="${pageContext.request.contextPath}/login" class="logout-btn">退出登录</a>
         </div>
     </div>
 
     <div class="container">
-        <h2>Electrical Appliances</h2>
-        <a href="${pageContext.request.contextPath}/applianceedit" class="add-btn">Add</a>
+        <h2>电器设备列表</h2>
+        <a href="${pageContext.request.contextPath}/applianceedit" class="add-btn">添加设备</a>
         <p id="debugInfo" style="color: blue; font-size: 12px;"></p>
         <table id="applianceTable">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Type</th>
-                    <th>Name</th>
-                    <th>Location</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th>名称</th>
+                    <th>位置</th>
+                    <th>类型</th>
+                    <th>状态</th>
+                    <th>操作</th>
                 </tr>
             </thead>
             <tbody id="applianceTableBody">
@@ -234,15 +234,14 @@
                     const status = appliance.status !== null && appliance.status !== undefined ? appliance.status : false;
 
                     tr.innerHTML = '<td>' + applianceId + '</td>' +
-                                   '<td>' + type + '</td>' +
                                    '<td>' + name + '</td>' +
                                    '<td>' + location + '</td>' +
+                                   '<td>' + type + '</td>' +
+                                   '<td><span class="status-badge ' + (status ? 'status-enabled' : 'status-disabled') + '">' + (status ? '开启' : '关闭') + '</span></td>' +
                                    '<td>' +
-                                   '<button class="action-btn ' + (status ? 'edit-btn' : 'delete-btn') + '" onclick="toggleStatus(' + applianceId + ', ' + status + ')">' + (status ? 'ON' : 'OFF') + '</button>' +
-                                   '</td>' +
-                                   '<td>' +
-                                   '<button class="action-btn edit-btn" onclick="editAppliance(' + applianceId + ')">Edit</button>' +
-                                   '<button class="action-btn delete-btn" onclick="deleteAppliance(' + applianceId + ')">Delete</button>' +
+                                   '<button class="action-btn toggle-btn" onclick="toggleAppliance(' + applianceId + ', ' + status + ')">' + (status ? '关闭' : '开启') + '</button>' +
+                                   '<button class="action-btn edit-btn" onclick="editAppliance(' + applianceId + ')">编辑</button>' +
+                                   '<button class="action-btn delete-btn" onclick="deleteAppliance(' + applianceId + ')">删除</button>' +
                                    '</td>';
                     tbody.appendChild(tr);
                 });
@@ -264,7 +263,7 @@
         }
 
         window.deleteAppliance = function(id) {
-            if (confirm('Are you sure you want to delete this appliance?')) {
+            if (confirm('确定要删除这个设备吗？')) {
                 const deleteUrl = API_BASE_URL + '/' + id;
                 console.log('Deleting appliance with ID:', id);
 
@@ -272,15 +271,11 @@
                     method: 'DELETE'
                 })
                 .then(response => {
-                    console.log('Delete response status:', response.status);
                     if (response.ok) {
                         renderTable();
-                        alert('Appliance deleted successfully');
-                    } else if (response.status === 404) {
-                        alert('Appliance not found.');
-                        renderTable();
+                        alert('设备删除成功');
                     } else {
-                        alert('Failed to delete appliance');
+                        alert('删除失败');
                     }
                 })
                 .catch(error => {
@@ -290,27 +285,25 @@
             }
         };
 
-        window.toggleStatus = function(id, currentStatus) {
+        window.toggleAppliance = function(id, currentStatus) {
             const toggleUrl = API_BASE_URL + '/' + id + '/toggle-status';
             console.log('Toggling status for appliance ID:', id, 'Current:', currentStatus);
 
             fetch(toggleUrl, {
                 method: 'PATCH'
             })
-            .then(response => {
-                console.log('Toggle status response:', response.status);
-                if (response.ok) {
-                    renderTable();
-                    const newStatus = !currentStatus;
-                    alert('Appliance turned ' + (newStatus ? 'ON' : 'OFF'));
-                } else {
-                    alert('Failed to toggle status');
-                }
-            })
-            .catch(error => {
-                console.error('Error toggling status:', error);
-                alert('Error: ' + error.message);
-            });
+                .then(response => {
+                    if (response.ok) {
+                        renderTable();
+                        alert('设备状态已切换');
+                    } else {
+                        alert('切换失败');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error toggling status:', error);
+                    alert('Error: ' + error.message);
+                });
         };
 
         window.editAppliance = function(id) {

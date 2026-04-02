@@ -91,38 +91,34 @@
 </head>
 <body>
     <div class="edit-container">
-        <h2 id="pageHeader">Add Electrical Appliance</h2>
-        <div class="form-title" id="formTitle" style="display: none;"></div>
+        <h2 id="pageHeader">添加设备</h2>
         <form class="edit-form" id="editForm">
             <input type="hidden" id="applianceId">
 
-            <label for="type">Type:</label>
-            <select id="type" required>
-                <option value="" disabled selected>Select Type</option>
-                <option value="Lighting">Lighting</option>
-                <option value="HVAC">HVAC (Heating/Cooling)</option>
-                <option value="Kitchen">Kitchen Appliance</option>
-                <option value="Entertainment">Entertainment</option>
-                <option value="Security">Security Device</option>
-                <option value="Washer">Washer/Dryer</option>
-                <option value="Other">Other</option>
+            <label for="name">设备名称：</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="location">位置：</label>
+            <input type="text" id="location" name="location" required>
+
+            <label for="type">类型：</label>
+            <select id="type" name="type" required>
+                <option value="">请选择类型</option>
+                <option value="LIGHT">灯</option>
+                <option value="AIR_CONDITIONER">空调</option>
+                <option value="TV">电视</option>
+                <option value="FAN">风扇</option>
+                <option value="OTHER">其他</option>
             </select>
 
-            <label for="name">Name:</label>
-            <input type="text" id="name" placeholder="e.g., Living Room Light" required>
-
-            <label for="location">Location:</label>
-            <input type="text" id="location" placeholder="e.g., Living Room, Floor 1" required>
-
-            <label for="status">Status:</label>
-            <select id="status" required>
-                <option value="true">ON</option>
-                <option value="false">OFF</option>
-            </select>
+            <div class="checkbox-group">
+                <input type="checkbox" id="statusCheckbox">
+                <label for="statusCheckbox">开启</label>
+            </div>
 
             <div class="btn-group">
-                <button type="button" class="cancel-btn" onclick="window.location.href='${pageContext.request.contextPath}/appliances'">Cancel</button>
-                <button type="submit" class="save-btn">Save</button>
+                <button type="button" class="cancel-btn" onclick="window.location.href='${pageContext.request.contextPath}/appliances'">取消</button>
+                <button type="submit" class="save-btn">保存</button>
             </div>
         </form>
     </div>
@@ -145,60 +141,53 @@
 
             if (applianceId) {
                 isEditMode = true;
-                document.getElementById('pageHeader').textContent = 'Edit Electrical Appliance';
-
-                const fetchUrl = API_BASE_URL + '/' + applianceId;
-                console.log('Fetching appliance from:', fetchUrl);
-
-                fetch(fetchUrl)
-                    .then(response => {
-                        console.log('Response status:', response.status);
-                        if (!response.ok) {
-                            throw new Error('Appliance not found');
-                        }
-                        return response.json();
-                    })
-                    .then(appliance => {
-                        console.log('Appliance data loaded:', appliance);
-                        document.getElementById('applianceId').value = appliance.id;
-                        document.getElementById('type').value = appliance.type;
-                        document.getElementById('name').value = appliance.name;
-                        document.getElementById('location').value = appliance.location;
-                        document.getElementById('status').value = appliance.status.toString();
-                    })
-                    .catch(error => {
-                        console.error('Error fetching appliance:', error);
-                        alert('Appliance not found. Error: ' + error.message);
-                        window.location.href = contextPath + '/appliances';
-                    });
+                document.getElementById('pageHeader').textContent = '编辑设备';
+                loadAppliance(applianceId);
             } else {
                 isEditMode = false;
-                document.getElementById('pageHeader').textContent = 'Add Electrical Appliance';
-                document.getElementById('applianceId').value = '';
+                document.getElementById('pageHeader').textContent = '添加设备';
             }
         });
+
+        function loadAppliance(applianceId) {
+            const fetchUrl = API_BASE_URL + '/' + applianceId;
+            console.log('Fetching appliance from:', fetchUrl);
+
+            fetch(fetchUrl)
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    if (!response.ok) {
+                        throw new Error('Appliance not found');
+                    }
+                    return response.json();
+                })
+                .then(appliance => {
+                    console.log('Appliance data loaded:', appliance);
+                    document.getElementById('applianceId').value = appliance.id;
+                    document.getElementById('name').value = appliance.name;
+                    document.getElementById('location').value = appliance.location;
+                    document.getElementById('type').value = appliance.type;
+                    document.getElementById('statusCheckbox').checked = appliance.status;
+                })
+                .catch(error => {
+                    console.error('Error fetching appliance:', error);
+                    alert('设备不存在。错误：' + error.message);
+                    window.location.href = contextPath + '/appliances';
+                });
+
+        }
 
         document.getElementById('editForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
             const applianceId = document.getElementById('applianceId').value;
-            const newType = document.getElementById('type').value.trim();
-            const newName = document.getElementById('name').value.trim();
-            const newLocation = document.getElementById('location').value.trim();
-            const newStatus = document.getElementById('status').value === 'true';
+            const name = document.getElementById('name').value.trim();
+            const location = document.getElementById('location').value.trim();
+            const type = document.getElementById('type').value;
+            const status = document.getElementById('statusCheckbox').checked;
 
-            if (!newType || !newName || !newLocation) {
-                alert('Type, Name, and Location cannot be empty.');
-                return;
-            }
-
-            if (newName.length < 2 || newName.length > 100) {
-                alert('Name must be between 2 and 100 characters.');
-                return;
-            }
-
-            if (newLocation.length < 2 || newLocation.length > 200) {
-                alert('Location must be between 2 and 200 characters.');
+            if (!name || !location || !type) {
+                alert('请填写完整信息。');
                 return;
             }
 
@@ -212,27 +201,21 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        type: newType,
-                        name: newName,
-                        location: newLocation,
-                        status: newStatus
+                        name: name,
+                        location: location,
+                        type: type,
+                        status: status
                     })
                 })
                 .then(response => {
-                    console.log('Update response status:', response.status);
                     if (response.ok) {
-                        alert('Appliance updated successfully!');
+                        alert('设备更新成功！');
                         window.location.href = contextPath + '/appliances';
-                    } else if (response.status === 404) {
-                        alert('Appliance not found.');
                     } else {
-                        alert('Update failed. Please try again.');
+                        alert('更新失败，请重试。');
                     }
                 })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Update failed. Please try again.');
-                });
+
             } else {
                 console.log('Creating new appliance');
 
@@ -242,25 +225,21 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        type: newType,
-                        name: newName,
-                        location: newLocation,
-                        status: newStatus
+                        name: name,
+                        location: location,
+                        type: type,
+                        status: status
                     })
                 })
                 .then(response => {
-                    console.log('Create response status:', response.status);
                     if (response.ok) {
-                        alert('Appliance added successfully!');
+                        alert('设备添加成功！');
                         window.location.href = contextPath + '/appliances';
                     } else {
-                        alert('Failed to add appliance. Please try again.');
+                        alert('添加失败，请重试。');
                     }
                 })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Failed to add appliance. Please try again.');
-                });
+
             }
         });
     </script>

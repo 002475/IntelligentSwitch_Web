@@ -5,21 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e0df7fa0-b06c-4193-991a-54a70c5df6e9" name="更改" comment="feat(electrical-appliance): 添加电气设备管理模块&#10;&#10;- 创建电气设备实体类，包含ID、类型、名称、位置、状态等属性&#10;- 实现电气设备控制器，提供增删改查和状态切换等REST API接口&#10;- 开发电气设备服务层，封装业务逻辑和数据访问操作&#10;- 构建电气设备数据访问层，实现JPA数据库操作&#10;- 创建电气设备管理页面，展示设备列表和操作按钮&#10;- 开发电气设备编辑页面，支持新增和修改设备信息&#10;- 添加系统日志页面，统一导航栏样式&#10;- 更新主页导航栏，集成电器设备管理入口&#10;- 在PageController中添加新的页面路由映射">
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/config/QuartzConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/controller/TaskController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/job/TaskExecutionJob.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/model/Task.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/repository/TaskRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/service/TaskService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/taskedit.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/tasksHome.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/controller/PageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/controller/PageController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/controller/TaskController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/controller/TaskController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/service/TaskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/service/TaskService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/electricalappliancesHome.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/electricalappliancesHome.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/electricalappliancesedit.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/electricalappliancesedit.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/home.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/home.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/logHome.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/logHome.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/login.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/login.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/register.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/register.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/taskedit.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/taskedit.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/tasksHome.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/tasksHome.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/useredit.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/useredit.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,11 +37,24 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="temp" />
+        <entry key="$PROJECT_DIR$" value="temp2" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="MIXED" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;002475&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/002475/IntelligentSwitch_Web.git&quot;,
+    &quot;accountId&quot;: &quot;03879e3d-5be4-4cbe-a7b6-56a8760b848e&quot;
+  }
+}</component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 6
@@ -93,6 +106,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Spring Boot.BackendApplication" />
         <item itemvalue="Spring Boot.BackendApplication" />
       </list>
     </recent_temporary>

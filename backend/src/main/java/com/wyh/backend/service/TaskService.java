@@ -7,6 +7,7 @@ import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,13 +42,57 @@ public class TaskService {
     @Transactional
     public Task save(Task task) {
         if (task.getCronExpression() == null && task.getExecuteTime() != null) {
-            String cron = String.format("%d %d %d * * ?",
-                    task.getExecuteTime().getSecond(),
-                    task.getExecuteTime().getMinute(),
-                    task.getExecuteTime().getHour());
+            LocalDateTime time = task.getExecuteTime();
+            String cron = generateCronExpression(time, task.getRepeat(), task.getRepeatDays());
             task.setCronExpression(cron);
         }
         return taskRepository.save(task);
+    }
+
+    private String generateCronExpression(LocalDateTime time, Boolean repeat, String repeatDays) {
+        if (repeat && repeatDays != null && !repeatDays.isEmpty()) {
+            String[] days = repeatDays.split(",");
+            StringBuilder dayNumbers = new StringBuilder();
+            
+            for (int i = 0; i < days.length; i++) {
+                String day = days[i].trim().toUpperCase();
+                String dayNum = switch (day) {
+                    case "SUN" -> "1";
+                    case "MON" -> "2";
+                    case "TUE" -> "3";
+                    case "WED" -> "4";
+                    case "THU" -> "5";
+                    case "FRI" -> "6";
+                    case "SAT" -> "7";
+                    default -> "";
+                };
+                
+                if (!dayNum.isEmpty()) {
+                    if (dayNumbers.length() > 0) {
+                        dayNumbers.append(",");
+                    }
+                    dayNumbers.append(dayNum);
+                }
+            }
+            
+            if (dayNumbers.length() == 0) {
+                return String.format("%d %d %d * * ?", 
+                        time.getSecond(),
+                        time.getMinute(),
+                        time.getHour());
+            }
+            
+            return String.format("%d %d %d ? * %s", 
+                    time.getSecond(),
+                    time.getMinute(),
+                    time.getHour(),
+                    dayNumbers.toString());
+        } else {
+            return String.format("%d %d %d * * ?", 
+                    time.getSecond(),
+                    time.getMinute(),
+                    time.getHour());
+        }
     }
 
     @Transactional
@@ -66,6 +111,14 @@ public class TaskService {
     @Transactional
     public void scheduleTask(Task task) {
         try {
+            // 验证 Cron 表达式
+            if (task.getCronExpression() == null || task.getCronExpression().trim().isEmpty()) {
+                throw new RuntimeException("Cron expression is required");
+            }
+            
+            String cronExpr = task.getCronExpression().trim();
+            System.out.println("Scheduling task with cron: '" + cronExpr + "'");
+            
             JobDataMap jobDataMap = new JobDataMap();
             jobDataMap.put("taskId", task.getId());
             jobDataMap.put("applianceId", task.getApplianceId());
@@ -78,12 +131,15 @@ public class TaskService {
 
             CronTrigger trigger = TriggerBuilder.newTrigger()
                     .withIdentity("trigger_" + task.getId(), "tasks")
-                    .withSchedule(CronScheduleBuilder.cronSchedule(task.getCronExpression()))
+                    .withSchedule(CronScheduleBuilder.cronSchedule(cronExpr))
                     .build();
 
             scheduler.scheduleJob(jobDetail, trigger);
+            System.out.println("Task scheduled successfully!");
         } catch (SchedulerException e) {
-            throw new RuntimeException("调度任务失败", e);
+            throw new RuntimeException("调度任务失败：" + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new RuntimeException("创建定时任务失败：" + e.getMessage(), e);
         }
     }
 
