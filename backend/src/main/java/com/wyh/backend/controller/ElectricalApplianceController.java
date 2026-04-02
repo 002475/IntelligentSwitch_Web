@@ -28,16 +28,24 @@ public class ElectricalApplianceController {
     }
 
     @PostMapping
-    public ElectricalAppliance createAppliance(@RequestBody ElectricalAppliance appliance) {
-        return applianceService.save(appliance);
+    public ResponseEntity<?> createAppliance(@RequestBody ElectricalAppliance appliance) {
+        if (applianceService.existsByName(appliance.getName())) {
+            return ResponseEntity.badRequest().body("电器名称已存在：" + appliance.getName());
+        }
+        return ResponseEntity.ok(applianceService.save(appliance));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ElectricalAppliance> updateAppliance(
+    public ResponseEntity<?> updateAppliance(
             @PathVariable Long id,
             @RequestBody ElectricalAppliance applianceDetails) {
         return applianceService.findById(id)
                 .map(appliance -> {
+                    if (!appliance.getName().equals(applianceDetails.getName())) {
+                        if (applianceService.existsByName(applianceDetails.getName())) {
+                            return ResponseEntity.badRequest().body("电器名称已存在：" + applianceDetails.getName());
+                        }
+                    }
                     appliance.setType(applianceDetails.getType());
                     appliance.setName(applianceDetails.getName());
                     appliance.setLocation(applianceDetails.getLocation());

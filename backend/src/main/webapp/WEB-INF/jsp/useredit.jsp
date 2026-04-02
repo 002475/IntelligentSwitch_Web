@@ -180,17 +180,20 @@
                         password: password
                     })
                 })
-                .then(response => {
-                    if (response.ok) {
+                .then(response => response.json())
+                .then(data => {
+                    if (data.timestamp && data.status === 500) {
+                        alert('用户名重复');
+                    } else if (typeof data === 'string') {
+                        alert(data);
+                    } else {
                         alert('用户更新成功！');
                         window.location.href = contextPath + '/home';
-                    } else {
-                        alert('更新失败，请重试。');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('更新失败，请重试。');
+                    alert('更新失败：' + error.message);
                 });
             } else {
                 const createUrl = API_BASE_URL;
@@ -207,17 +210,20 @@
                         password: password
                     })
                 })
-                .then(response => {
-                    if (response.ok) {
+                .then(response => response.json())
+                .then(data => {
+                    if (data.timestamp && data.status === 500) {
+                        alert('用户名重复');
+                    } else if (typeof data === 'string') {
+                        alert(data);
+                    } else {
                         alert('用户添加成功！');
                         window.location.href = contextPath + '/home';
-                    } else {
-                        alert('添加失败，请重试。');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('添加失败，请重试。');
+                    alert('添加失败：' + error.message);
                 });
             }
 

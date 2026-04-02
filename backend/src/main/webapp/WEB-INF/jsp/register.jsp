@@ -124,20 +124,23 @@
                     password: formData.password
                 })
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('注册成功！即将跳转到登录页面...');
-                    setTimeout(() => {
-                        window.location.href = contextPath + '/login';
-                    }, 1500);
-                } else {
-                    alert('注册失败：' + (data.message || '未知错误'));
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(text || '注册失败');
+                    });
                 }
+                return response.json();
+            })
+            .then(data => {
+                alert('注册成功！即将跳转到登录页面...');
+                setTimeout(() => {
+                    window.location.href = contextPath + '/login';
+                }, 1500);
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('注册失败，请稍后再试。');
+                alert('注册失败：' + error.message);
             });
         });
     </script>

@@ -207,14 +207,27 @@
                         status: status
                     })
                 })
-                .then(response => {
-                    if (response.ok) {
+                .then(response => response.json())
+                .then(data => {
+                    if (data.timestamp && data.status === 500) {
+                        alert('电器名称重复');
+                    } else if (typeof data === 'string') {
+                        if (data.includes('已存在')) {
+                            alert('电器名称重复');
+                        } else {
+                            alert(data);
+                        }
+                    } else if (data.name) {
                         alert('设备更新成功！');
                         window.location.href = contextPath + '/appliances';
                     } else {
                         alert('更新失败，请重试。');
                     }
                 })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('更新失败：' + error.message);
+                });
 
             } else {
                 console.log('Creating new appliance');
@@ -231,14 +244,27 @@
                         status: status
                     })
                 })
-                .then(response => {
-                    if (response.ok) {
+                .then(response => response.json())
+                .then(data => {
+                    if (data.timestamp && data.status === 500) {
+                        alert('电器名称重复');
+                    } else if (typeof data === 'string') {
+                        if (data.includes('已存在')) {
+                            alert('电器名称重复');
+                        } else {
+                            alert(data);
+                        }
+                    } else if (data.name) {
                         alert('设备添加成功！');
                         window.location.href = contextPath + '/appliances';
                     } else {
                         alert('添加失败，请重试。');
                     }
                 })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('操作失败：' + error.message);
+                });
 
             }
         });

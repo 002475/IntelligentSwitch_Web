@@ -44,4 +44,14 @@ public class ElectricalApplianceService {
     public List<ElectricalAppliance> searchByLocation(String keyword) {
         return applianceRepository.findByLocationContaining(keyword);
     }
+
+    public boolean existsByName(String name) {
+        return applianceRepository.existsByName(name);
+    }
+
+    public boolean existsByNameExcludeId(String name, Long excludeId) {
+        return applianceRepository.findByName(name)
+                .map(appliance -> !appliance.getId().equals(excludeId))
+                .orElse(false);
+    }
 }
