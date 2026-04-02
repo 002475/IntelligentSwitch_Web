@@ -4,15 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e0df7fa0-b06c-4193-991a-54a70c5df6e9" name="更改" comment="feat(frontend): 本地化界面并优化设备管理功能&#10;&#10;- 将所有JSP页面的界面文本翻译为中文&#10;- 更新设备编辑页面的表单字段和验证逻辑&#10;- 重构任务控制器的数据处理方式&#10;- 优化设备列表的状态显示和操作按钮&#10;- 添加用户列表的创建时间显示&#10;- 改进注册和登录页面的表单验证&#10;- 调整导航菜单的中文标签和路由&#10;- 优化任务编辑页面的日期时间处理">
+    <list default="true" id="e0df7fa0-b06c-4193-991a-54a70c5df6e9" name="更改" comment="fix(backend): 解决电器名称重复验证问题&#10;&#10;- 在ElectricalApplianceController中添加名称重复检查逻辑&#10;- 实现createAppliance和updateAppliance方法的名称唯一性验证&#10;- 添加ResponseEntity响应类型处理验证错误情况&#10;- 在ElectricalApplianceRepository中增加findByName和existsByName方法&#10;- 实现ElectricalApplianceService中的existsByName和existsByNameExcludeId方法&#10;- 更新前端JSP页面处理后端返回的名称重复错误信息&#10;- 优化UserController中的用户注册和更新逻辑处理&#10;- 修复register.jsp中的错误处理和提示信息显示">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/controller/ElectricalApplianceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/controller/ElectricalApplianceController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/repository/ElectricalApplianceRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/repository/ElectricalApplianceRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/service/ElectricalApplianceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/service/ElectricalApplianceService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/electricalappliancesedit.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/electricalappliancesedit.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/register.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/register.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/useredit.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/useredit.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -143,7 +136,15 @@
       <option name="project" value="LOCAL" />
       <updated>1775120880564</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="fix(backend): 解决电器名称重复验证问题&#10;&#10;- 在ElectricalApplianceController中添加名称重复检查逻辑&#10;- 实现createAppliance和updateAppliance方法的名称唯一性验证&#10;- 添加ResponseEntity响应类型处理验证错误情况&#10;- 在ElectricalApplianceRepository中增加findByName和existsByName方法&#10;- 实现ElectricalApplianceService中的existsByName和existsByNameExcludeId方法&#10;- 更新前端JSP页面处理后端返回的名称重复错误信息&#10;- 优化UserController中的用户注册和更新逻辑处理&#10;- 修复register.jsp中的错误处理和提示信息显示">
+      <option name="closed" value="true" />
+      <created>1775121428510</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1775121428510</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -174,7 +175,8 @@
     <MESSAGE value="feat(frontend): 将前端数据存储方式从localStorage改为后端API调用&#10;&#10;- 移除localStorage数据模拟，改为调用后端API获取用户数据&#10;- 实现用户删除功能通过API调用替代本地存储操作&#10;- 更新登录页面集成后端用户验证接口&#10;- 实现注册页面通过API向后端提交用户注册信息&#10;- 完善用户编辑页面通过API获取和更新用户信息&#10;- 添加调试信息显示便于开发过程中的问题排查&#10;- 统一前后端数据交互方式，提升系统架构合理性" />
     <MESSAGE value="feat(electrical-appliance): 添加电气设备管理模块&#10;&#10;- 创建电气设备实体类，包含ID、类型、名称、位置、状态等属性&#10;- 实现电气设备控制器，提供增删改查和状态切换等REST API接口&#10;- 开发电气设备服务层，封装业务逻辑和数据访问操作&#10;- 构建电气设备数据访问层，实现JPA数据库操作&#10;- 创建电气设备管理页面，展示设备列表和操作按钮&#10;- 开发电气设备编辑页面，支持新增和修改设备信息&#10;- 添加系统日志页面，统一导航栏样式&#10;- 更新主页导航栏，集成电器设备管理入口&#10;- 在PageController中添加新的页面路由映射" />
     <MESSAGE value="feat(frontend): 本地化界面并优化设备管理功能&#10;&#10;- 将所有JSP页面的界面文本翻译为中文&#10;- 更新设备编辑页面的表单字段和验证逻辑&#10;- 重构任务控制器的数据处理方式&#10;- 优化设备列表的状态显示和操作按钮&#10;- 添加用户列表的创建时间显示&#10;- 改进注册和登录页面的表单验证&#10;- 调整导航菜单的中文标签和路由&#10;- 优化任务编辑页面的日期时间处理" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(frontend): 本地化界面并优化设备管理功能&#10;&#10;- 将所有JSP页面的界面文本翻译为中文&#10;- 更新设备编辑页面的表单字段和验证逻辑&#10;- 重构任务控制器的数据处理方式&#10;- 优化设备列表的状态显示和操作按钮&#10;- 添加用户列表的创建时间显示&#10;- 改进注册和登录页面的表单验证&#10;- 调整导航菜单的中文标签和路由&#10;- 优化任务编辑页面的日期时间处理" />
+    <MESSAGE value="fix(backend): 解决电器名称重复验证问题&#10;&#10;- 在ElectricalApplianceController中添加名称重复检查逻辑&#10;- 实现createAppliance和updateAppliance方法的名称唯一性验证&#10;- 添加ResponseEntity响应类型处理验证错误情况&#10;- 在ElectricalApplianceRepository中增加findByName和existsByName方法&#10;- 实现ElectricalApplianceService中的existsByName和existsByNameExcludeId方法&#10;- 更新前端JSP页面处理后端返回的名称重复错误信息&#10;- 优化UserController中的用户注册和更新逻辑处理&#10;- 修复register.jsp中的错误处理和提示信息显示" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix(backend): 解决电器名称重复验证问题&#10;&#10;- 在ElectricalApplianceController中添加名称重复检查逻辑&#10;- 实现createAppliance和updateAppliance方法的名称唯一性验证&#10;- 添加ResponseEntity响应类型处理验证错误情况&#10;- 在ElectricalApplianceRepository中增加findByName和existsByName方法&#10;- 实现ElectricalApplianceService中的existsByName和existsByNameExcludeId方法&#10;- 更新前端JSP页面处理后端返回的名称重复错误信息&#10;- 优化UserController中的用户注册和更新逻辑处理&#10;- 修复register.jsp中的错误处理和提示信息显示" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
