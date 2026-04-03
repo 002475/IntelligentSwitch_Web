@@ -57,14 +57,29 @@ public class TaskController {
             System.out.println("Parsed execute time: " + executeTime);
             task.setExecuteTime(executeTime);
 
+            // 处理 Cron 表达式（如果前端传了就使用）
             if (taskData.containsKey("cronExpression")) {
                 String cronExpr = taskData.get("cronExpression").toString().trim();
                 System.out.println("Cron expression: '" + cronExpr + "'");
                 task.setCronExpression(cronExpr);
             }
 
-            if (taskData.containsKey("repeatDays")) {
-                task.setRepeatDays(taskData.get("repeatDays").toString());
+            // 处理重复日期（只有重复任务才需要）
+            Boolean repeat = (Boolean) taskData.get("repeat");
+            if (repeat != null && repeat) {
+                Object repeatDaysObj = taskData.get("repeatDays");
+                if (repeatDaysObj != null) {
+                    String repeatDays = repeatDaysObj.toString().trim();
+                    System.out.println("Repeat days: " + repeatDays);
+                    task.setRepeatDays(repeatDays);
+                } else {
+                    // 如果是重复任务但没有传 repeatDays，默认为每天重复
+                    System.out.println("Repeat task without repeatDays, default to daily");
+                    task.setRepeatDays("");
+                }
+            } else {
+                // 非重复任务不需要 repeatDays
+                task.setRepeatDays(null);
             }
 
             Task savedTask = taskService.save(task);
@@ -97,46 +112,63 @@ public class TaskController {
             
             return taskService.findById(id)
                 .map(existingTask -> {
+                    existingTask.setApplianceId(Long.parseLong(taskData.get("applianceId").toString()));
+                    existingTask.setTaskType(taskData.get("taskType").toString());
+                    existingTask.setRepeat((Boolean) taskData.get("repeat"));
+                    existingTask.setEnabled((Boolean) taskData.get("enabled"));
+                    
+                    String executeTimeStr = taskData.get("executeTime").toString();
+                    System.out.println("Execute time string: " + executeTimeStr);
+                    
+                    LocalDateTime executeTime = parseLocalDateTime(executeTimeStr);
+                    System.out.println("Parsed execute time: " + executeTime);
+                    existingTask.setExecuteTime(executeTime);
+                    
+                    // 处理 Cron 表达式
+                    if (taskData.containsKey("cronExpression")) {
+                        String cronExpr = taskData.get("cronExpression").toString().trim();
+                        System.out.println("Cron expression: '" + cronExpr + "'");
+                        existingTask.setCronExpression(cronExpr);
+                    }
+                    
+                    // 处理重复日期
+                    Boolean repeat = (Boolean) taskData.get("repeat");
+                    if (repeat != null && repeat) {
+                        Object repeatDaysObj = taskData.get("repeatDays");
+                        if (repeatDaysObj != null) {
+                            String repeatDays = repeatDaysObj.toString().trim();
+                            System.out.println("Repeat days: " + repeatDays);
+                            existingTask.setRepeatDays(repeatDays);
+                        } else {
+                            // 重复任务但没有传 repeatDays，默认为每天重复
+                            existingTask.setRepeatDays("");
+                        }
+                    } else {
+                        // 非重复任务清空 repeatDays
+                        existingTask.setRepeatDays(null);
+                    }
+                    
+                    Task updatedTask = taskService.save(existingTask);
+                    System.out.println("Updated task ID: " + updatedTask.getId());
+                    
+                    // 重新调度任务（即使调度失败也不影响数据更新）
                     try {
-                        existingTask.setApplianceId(Long.parseLong(taskData.get("applianceId").toString()));
-                        existingTask.setTaskType(taskData.get("taskType").toString());
-                        existingTask.setRepeat((Boolean) taskData.get("repeat"));
-                        existingTask.setEnabled((Boolean) taskData.get("enabled"));
-                        
-                        String executeTimeStr = taskData.get("executeTime").toString();
-                        System.out.println("Execute time string: " + executeTimeStr);
-                        
-                        LocalDateTime executeTime = parseLocalDateTime(executeTimeStr);
-                        System.out.println("Parsed execute time: " + executeTime);
-                        existingTask.setExecuteTime(executeTime);
-                        
-                        if (taskData.containsKey("cronExpression")) {
-                            String cronExpr = taskData.get("cronExpression").toString().trim();
-                            System.out.println("Cron expression: '" + cronExpr + "'");
-                            existingTask.setCronExpression(cronExpr);
-                        }
-                        
-                        if (taskData.containsKey("repeatDays")) {
-                            existingTask.setRepeatDays(taskData.get("repeatDays").toString());
-                        }
-                        
-                        Task updatedTask = taskService.save(existingTask);
-                        System.out.println("Updated task ID: " + updatedTask.getId());
-                        
                         taskService.unscheduleTask(id);
                         if (updatedTask.getEnabled()) {
                             taskService.scheduleTask(updatedTask);
                         }
-                        
-                        Map<String, Object> response = new HashMap<>();
-                        response.put("success", true);
-                        response.put("task", updatedTask);
-                        return ResponseEntity.ok(response);
-                        
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        throw new RuntimeException(e);
+                        System.out.println("Task rescheduled successfully");
+                    } catch (Exception scheduleException) {
+                        System.err.println("Warning: Task updated but scheduling failed: " + scheduleException.getMessage());
+                        scheduleException.printStackTrace();
+                        // 调度失败不影响数据更新成功的事实
                     }
+                    
+                    Map<String, Object> response = new HashMap<>();
+                    response.put("success", true);
+                    response.put("task", updatedTask);
+                    response.put("message", "任务更新成功");
+                    return ResponseEntity.ok(response);
                 })
                 .orElse(ResponseEntity.notFound().build());
                 

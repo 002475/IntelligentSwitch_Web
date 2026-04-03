@@ -38,9 +38,22 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
+        // 1. 校验密码不能为空
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+            return ResponseEntity.badRequest().body("密码不能为空");
+        }
+        
+        // 2. 校验密码长度至少 6 位
+        if (user.getPassword().length() < 6) {
+            return ResponseEntity.badRequest().body("密码长度至少 6 位");
+        }
+        
+        // 3. 校验用户名是否已存在
         if (userService.existsByUsername(user.getUsername())) {
             return ResponseEntity.badRequest().body("用户名已存在");
         }
+        
+        // 4. 保存用户
         User savedUser = userService.save(user);
         return ResponseEntity.ok(savedUser);
     }

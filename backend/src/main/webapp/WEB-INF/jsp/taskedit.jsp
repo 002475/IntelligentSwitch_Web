@@ -393,13 +393,25 @@
             let repeatDays = null;
             if (repeat) {
                 const selectedDays = [];
-                ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'].forEach(day => {
-                    const checkbox = document.querySelector(`input[value="${day}"]`);
-                    if (checkbox.checked) {
-                        selectedDays.push(day);
+
+                // 直接通过 ID 获取每个星期的 checkbox
+                const dayIds = ['dayMon', 'dayTue', 'dayWed', 'dayThu', 'dayFri', 'daySat', 'daySun'];
+                const dayValues = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+
+                for (let i = 0; i < dayIds.length; i++) {
+                    const checkbox = document.getElementById(dayIds[i]);
+                    console.log('Checking checkbox ID:', dayIds[i], ', Element:', checkbox, ', Checked:', checkbox ? checkbox.checked : 'N/A');
+
+                    if (checkbox && checkbox.checked) {
+                        selectedDays.push(dayValues[i]);
+                        console.log('Added day:', dayValues[i]);
                     }
-                });
+                }
+
+                console.log('Selected days array:', selectedDays);
+
                 if (selectedDays.length === 0) {
+                    console.warn('No days selected for repeat task');
                     alert('请至少选择一天作为重复任务的执行日期。');
                     return;
                 }
@@ -413,18 +425,25 @@
 
             console.log('Execute DateTime:', formattedDateTime);
             console.log('Cron Expression:', cronExpression);
+            console.log('Repeat:', repeat);
+            console.log('Repeat Days:', repeatDays);
 
             const taskData = {
                 applianceId: applianceId,
                 taskType: taskType,
                 executeTime: formattedDateTime,
-                cronExpression: cronExpression,
                 repeat: repeat,
                 enabled: enabled
             };
 
-            if (repeatDays) {
-                taskData.repeatDays = repeatDays;
+            // 总是传递 repeatDays 字段，即使是空字符串
+            if (repeat) {
+                taskData.repeatDays = repeatDays || '';
+            }
+
+            // 如果前端已经计算了 Cron，也传过去（可选）
+            if (cronExpression) {
+                taskData.cronExpression = cronExpression;
             }
 
             if (isEditMode && taskId) {

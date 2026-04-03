@@ -41,16 +41,19 @@ public class TaskService {
 
     @Transactional
     public Task save(Task task) {
+        // 如果没有 Cron 表达式且有执行时间，则自动生成
         if (task.getCronExpression() == null && task.getExecuteTime() != null) {
             LocalDateTime time = task.getExecuteTime();
             String cron = generateCronExpression(time, task.getRepeat(), task.getRepeatDays());
             task.setCronExpression(cron);
+            System.out.println("Generated cron expression: " + cron);
         }
         return taskRepository.save(task);
     }
 
     private String generateCronExpression(LocalDateTime time, Boolean repeat, String repeatDays) {
-        if (repeat && repeatDays != null && !repeatDays.isEmpty()) {
+        // 如果是重复任务且有重复日期
+        if (repeat != null && repeat && repeatDays != null && !repeatDays.trim().isEmpty()) {
             String[] days = repeatDays.split(",");
             StringBuilder dayNumbers = new StringBuilder();
             
@@ -75,23 +78,32 @@ public class TaskService {
                 }
             }
             
+            // 如果没有有效的星期几，默认每天执行
             if (dayNumbers.length() == 0) {
+                System.out.println("No valid repeat days, using daily repetition");
                 return String.format("%d %d %d * * ?", 
                         time.getSecond(),
                         time.getMinute(),
                         time.getHour());
             }
             
-            return String.format("%d %d %d ? * %s", 
+            // 按指定星期几执行
+            String cron = String.format("%d %d %d ? * %s", 
                     time.getSecond(),
                     time.getMinute(),
                     time.getHour(),
                     dayNumbers.toString());
+            System.out.println("Weekly repetition cron: " + cron);
+            return cron;
+            
         } else {
-            return String.format("%d %d %d * * ?", 
+            // 非重复任务或空重复日期 → 每天执行
+            String cron = String.format("%d %d %d * * ?", 
                     time.getSecond(),
                     time.getMinute(),
                     time.getHour());
+            System.out.println("Daily repetition cron: " + cron);
+            return cron;
         }
     }
 

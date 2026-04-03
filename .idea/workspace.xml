@@ -6,6 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="e0df7fa0-b06c-4193-991a-54a70c5df6e9" name="更改" comment="fix(backend): 解决电器名称重复验证问题&#10;&#10;- 在ElectricalApplianceController中添加名称重复检查逻辑&#10;- 实现createAppliance和updateAppliance方法的名称唯一性验证&#10;- 添加ResponseEntity响应类型处理验证错误情况&#10;- 在ElectricalApplianceRepository中增加findByName和existsByName方法&#10;- 实现ElectricalApplianceService中的existsByName和existsByNameExcludeId方法&#10;- 更新前端JSP页面处理后端返回的名称重复错误信息&#10;- 优化UserController中的用户注册和更新逻辑处理&#10;- 修复register.jsp中的错误处理和提示信息显示">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/controller/TaskController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/controller/TaskController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/service/TaskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/wyh/backend/service/TaskService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/taskedit.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/webapp/WEB-INF/jsp/taskedit.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +25,12 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="PUSH_TAGS">
+      <GitPushTagMode>
+        <option name="argument" value="--tags" />
+        <option name="title" value="All" />
+      </GitPushTagMode>
+    </option>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
         <entry key="$PROJECT_DIR$" value="temp2" />
@@ -144,7 +154,15 @@
       <option name="project" value="LOCAL" />
       <updated>1775121428510</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="fix(backend): 解决电器名称重复验证问题&#10;&#10;- 在ElectricalApplianceController中添加名称重复检查逻辑&#10;- 实现createAppliance和updateAppliance方法的名称唯一性验证&#10;- 添加ResponseEntity响应类型处理验证错误情况&#10;- 在ElectricalApplianceRepository中增加findByName和existsByName方法&#10;- 实现ElectricalApplianceService中的existsByName和existsByNameExcludeId方法&#10;- 更新前端JSP页面处理后端返回的名称重复错误信息&#10;- 优化UserController中的用户注册和更新逻辑处理&#10;- 修复register.jsp中的错误处理和提示信息显示">
+      <option name="closed" value="true" />
+      <created>1775130221032</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1775130221032</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
