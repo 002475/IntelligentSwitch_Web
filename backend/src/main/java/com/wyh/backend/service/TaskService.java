@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskService {
@@ -39,9 +40,17 @@ public class TaskService {
         return taskRepository.findById(id);
     }
 
+    public List<Task> searchTasks(String keyword) {
+        return taskRepository.findAll().stream()
+            .filter(task -> 
+                (task.getTaskType() != null && task.getTaskType().contains(keyword)) ||
+                (task.getCronExpression() != null && task.getCronExpression().contains(keyword))
+            )
+            .collect(Collectors.toList());
+    }
+
     @Transactional
     public Task save(Task task) {
-        // 如果没有 Cron 表达式且有执行时间，则自动生成
         if (task.getCronExpression() == null && task.getExecuteTime() != null) {
             LocalDateTime time = task.getExecuteTime();
             String cron = generateCronExpression(time, task.getRepeat(), task.getRepeatDays());
@@ -52,7 +61,6 @@ public class TaskService {
     }
 
     private String generateCronExpression(LocalDateTime time, Boolean repeat, String repeatDays) {
-        // 如果是重复任务且有重复日期
         if (repeat != null && repeat && repeatDays != null && !repeatDays.trim().isEmpty()) {
             String[] days = repeatDays.split(",");
             StringBuilder dayNumbers = new StringBuilder();
@@ -78,7 +86,6 @@ public class TaskService {
                 }
             }
             
-            // 如果没有有效的星期几，默认每天执行
             if (dayNumbers.length() == 0) {
                 System.out.println("No valid repeat days, using daily repetition");
                 return String.format("%d %d %d * * ?", 
@@ -87,7 +94,6 @@ public class TaskService {
                         time.getHour());
             }
             
-            // 按指定星期几执行
             String cron = String.format("%d %d %d ? * %s", 
                     time.getSecond(),
                     time.getMinute(),
@@ -97,7 +103,6 @@ public class TaskService {
             return cron;
             
         } else {
-            // 非重复任务或空重复日期 → 每天执行
             String cron = String.format("%d %d %d * * ?", 
                     time.getSecond(),
                     time.getMinute(),
@@ -123,7 +128,6 @@ public class TaskService {
     @Transactional
     public void scheduleTask(Task task) {
         try {
-            // 验证 Cron 表达式
             if (task.getCronExpression() == null || task.getCronExpression().trim().isEmpty()) {
                 throw new RuntimeException("Cron expression is required");
             }

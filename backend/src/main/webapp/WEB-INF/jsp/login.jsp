@@ -10,7 +10,7 @@
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
-            background-image: url("${pageContext.request.contextPath}/images/login_register_bg.png"); /* 确保图片在同一目录 */
+            background-image: url("${pageContext.request.contextPath}/images/login_register_bg.png");
             background-size: cover;
             background-position: center;
             display: flex;
@@ -66,7 +66,6 @@
 <body>
     <div class="login-container">
         <h2>登录</h2>
-        <!-- 移除了 action 和 method，改为由 JS 处理 -->
         <form class="login-form" id="loginForm">
             <label for="username">用户名:</label>
             <input type="text" id="username" name="username" required>
@@ -91,9 +90,6 @@
                 return;
             }
 
-            // 发送请求到后端获取用户信息（简单验证）
-            // 注意：实际项目中应该有专门的登录接口进行认证
-            // 这里先获取所有用户，然后验证用户名和密码
             fetch('${pageContext.request.contextPath}/api/users')
                 .then(response => response.json())
                 .then(users => {
@@ -103,10 +99,8 @@
                         sessionStorage.setItem('currentUser', JSON.stringify(user));
                         window.location.href = '${pageContext.request.contextPath}/home';
                     } else {
-                        // 如果密码不匹配，尝试只验证用户名（临时方案）
                         const userByName = users.find(u => u.username === username);
                         if (userByName) {
-                            // 密码不匹配时的处理
                             alert('密码错误。');
                         } else {
                             alert('账号不存在，请先注册。');

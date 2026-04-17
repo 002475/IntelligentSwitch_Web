@@ -37,9 +37,22 @@ public class TaskController {
         return ResponseEntity.ok(taskService.findByApplianceId(applianceId));
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<Task>> searchTasks(@RequestParam String keyword) {
+        return ResponseEntity.ok(taskService.searchTasks(keyword));
+    }
+
     @PostMapping
     public ResponseEntity<Map<String, Object>> createTask(@RequestBody Map<String, Object> taskData) {
         try {
+            Boolean isAdmin = (Boolean) taskData.get("isAdmin");
+            if (isAdmin == null || !isAdmin) {
+                Map<String, Object> response = new HashMap<>();
+                response.put("success", false);
+                response.put("message", "只有管理员可以添加任务");
+                return ResponseEntity.status(403).body(response);
+            }
+
             System.out.println("=== Creating Task ===");
             System.out.println("Received data: " + taskData);
 
@@ -57,14 +70,12 @@ public class TaskController {
             System.out.println("Parsed execute time: " + executeTime);
             task.setExecuteTime(executeTime);
 
-            // 处理 Cron 表达式（如果前端传了就使用）
             if (taskData.containsKey("cronExpression")) {
                 String cronExpr = taskData.get("cronExpression").toString().trim();
                 System.out.println("Cron expression: '" + cronExpr + "'");
                 task.setCronExpression(cronExpr);
             }
 
-            // 处理重复日期（只有重复任务才需要）
             Boolean repeat = (Boolean) taskData.get("repeat");
             if (repeat != null && repeat) {
                 Object repeatDaysObj = taskData.get("repeatDays");
@@ -73,12 +84,10 @@ public class TaskController {
                     System.out.println("Repeat days: " + repeatDays);
                     task.setRepeatDays(repeatDays);
                 } else {
-                    // 如果是重复任务但没有传 repeatDays，默认为每天重复
                     System.out.println("Repeat task without repeatDays, default to daily");
                     task.setRepeatDays("");
                 }
             } else {
-                // 非重复任务不需要 repeatDays
                 task.setRepeatDays(null);
             }
 
@@ -106,6 +115,14 @@ public class TaskController {
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, Object>> updateTask(@PathVariable Long id, @RequestBody Map<String, Object> taskData) {
         try {
+            Boolean isAdmin = (Boolean) taskData.get("isAdmin");
+            if (isAdmin == null || !isAdmin) {
+                Map<String, Object> response = new HashMap<>();
+                response.put("success", false);
+                response.put("message", "只有管理员可以编辑任务");
+                return ResponseEntity.status(403).body(response);
+            }
+
             System.out.println("=== Updating Task ===");
             System.out.println("Task ID: " + id);
             System.out.println("Received data: " + taskData);
@@ -124,14 +141,12 @@ public class TaskController {
                     System.out.println("Parsed execute time: " + executeTime);
                     existingTask.setExecuteTime(executeTime);
                     
-                    // 处理 Cron 表达式
                     if (taskData.containsKey("cronExpression")) {
                         String cronExpr = taskData.get("cronExpression").toString().trim();
                         System.out.println("Cron expression: '" + cronExpr + "'");
                         existingTask.setCronExpression(cronExpr);
                     }
                     
-                    // 处理重复日期
                     Boolean repeat = (Boolean) taskData.get("repeat");
                     if (repeat != null && repeat) {
                         Object repeatDaysObj = taskData.get("repeatDays");
@@ -140,18 +155,15 @@ public class TaskController {
                             System.out.println("Repeat days: " + repeatDays);
                             existingTask.setRepeatDays(repeatDays);
                         } else {
-                            // 重复任务但没有传 repeatDays，默认为每天重复
                             existingTask.setRepeatDays("");
                         }
                     } else {
-                        // 非重复任务清空 repeatDays
                         existingTask.setRepeatDays(null);
                     }
                     
                     Task updatedTask = taskService.save(existingTask);
                     System.out.println("Updated task ID: " + updatedTask.getId());
                     
-                    // 重新调度任务（即使调度失败也不影响数据更新）
                     try {
                         taskService.unscheduleTask(id);
                         if (updatedTask.getEnabled()) {
@@ -161,7 +173,6 @@ public class TaskController {
                     } catch (Exception scheduleException) {
                         System.err.println("Warning: Task updated but scheduling failed: " + scheduleException.getMessage());
                         scheduleException.printStackTrace();
-                        // 调度失败不影响数据更新成功的事实
                     }
                     
                     Map<String, Object> response = new HashMap<>();
@@ -182,7 +193,15 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+    public ResponseEntity<?> deleteTask(@PathVariable Long id, @RequestBody(required = false) Map<String, Object> request) {
+        Boolean isAdmin = request != null ? (Boolean) request.get("isAdmin") : false;
+        if (!isAdmin) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("success", false);
+            error.put("message", "只有管理员可以删除任务");
+            return ResponseEntity.status(403).body(error);
+        }
+        
         taskService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

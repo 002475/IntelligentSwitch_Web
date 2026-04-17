@@ -10,7 +10,7 @@
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
-            background-image: url("${pageContext.request.contextPath}/images/login_register_bg.png"); /* 确保图片在同一目录 */
+            background-image: url("${pageContext.request.contextPath}/images/login_register_bg.png");
             background-size: cover;
             background-position: center;
             display: flex;
@@ -33,6 +33,12 @@
             margin-bottom: 5px;
         }
         .register-form input {
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .register-form select {
             padding: 8px;
             margin-bottom: 10px;
             border: 1px solid #ccc;
@@ -75,6 +81,11 @@
             <input type="password" id="password" name="password" required>
             <label for="confirm_password">确认密码:</label>
             <input type="password" id="confirm_password" name="confirm_password" required>
+            <label for="role">角色:</label>
+            <select id="role" name="role" required>
+                <option value="USER">普通用户</option>
+                <option value="ADMIN">管理员</option>
+            </select>
             <button type="submit">注册</button>
         </form>
         <div class="toggle-link">
@@ -88,18 +99,18 @@
 
             const formData = {
                 username: document.getElementById('username').value.trim(),
+                email: document.getElementById('email').value.trim(),
                 password: document.getElementById('password').value,
-                confirmPassword: document.getElementById('confirmPassword').value
+                confirmPassword: document.getElementById('confirm_password').value,
+                role: document.getElementById('role').value
             };
 
-            // 1. 验证用户名：只能包含汉字、字母、数字
             const usernameRegex = /^[\u4e00-\u9fa5a-zA-Z0-9]+$/;
             if (!usernameRegex.test(formData.username)) {
                 alert('用户名只能包含汉字、字母和数字。');
                 return;
             }
 
-            // 2. 验证密码：必须同时包含字母和数字
             const hasLetter = /[a-zA-Z]/.test(formData.password);
             const hasNumber = /[0-9]/.test(formData.password);
             if (!hasLetter || !hasNumber) {
@@ -107,7 +118,6 @@
                 return;
             }
 
-            // 3. 验证确认密码
             if (formData.password !== formData.confirmPassword) {
                 alert('两次输入的密码不一致！');
                 return;
@@ -121,7 +131,9 @@
                 },
                 body: JSON.stringify({
                     username: formData.username,
-                    password: formData.password
+                    email: formData.email,
+                    password: formData.password,
+                    role: formData.role
                 })
             })
             .then(response => {

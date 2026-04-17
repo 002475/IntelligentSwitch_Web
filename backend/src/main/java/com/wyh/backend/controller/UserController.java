@@ -15,20 +15,11 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    /**
-     * 获取所有用户列表
-     * @return List<User> 用户列表，如果无数据则返回空列表
-     */
     @GetMapping
     public List<User> getAllUsers() {
         return userService.findAll();
     }
 
-    /**
-     * 根据 ID 获取用户
-     * @param id 用户 ID，从 URL 路径中获取
-     * @return ResponseEntity<User> 找到用户返回 200 OK 和用户信息；未找到返回 404 Not Found
-     */
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         return userService.findById(id)
@@ -36,24 +27,29 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/search")
+    public List<User> searchUsers(@RequestParam String keyword) {
+        return userService.searchUsers(keyword);
+    }
+
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
-        // 1. 校验密码不能为空
         if (user.getPassword() == null || user.getPassword().isEmpty()) {
             return ResponseEntity.badRequest().body("密码不能为空");
         }
         
-        // 2. 校验密码长度至少 6 位
         if (user.getPassword().length() < 6) {
             return ResponseEntity.badRequest().body("密码长度至少 6 位");
         }
         
-        // 3. 校验用户名是否已存在
         if (userService.existsByUsername(user.getUsername())) {
             return ResponseEntity.badRequest().body("用户名已存在");
         }
         
-        // 4. 保存用户
+        if (user.getRole() == null || user.getRole().isEmpty()) {
+            user.setRole("USER");
+        }
+        
         User savedUser = userService.save(user);
         return ResponseEntity.ok(savedUser);
     }
@@ -62,6 +58,9 @@ public class UserController {
     public ResponseEntity<?> createUser(@RequestBody User user) {
         if (userService.existsByUsername(user.getUsername())) {
             return ResponseEntity.badRequest().body("用户名已存在");
+        }
+        if (user.getRole() == null || user.getRole().isEmpty()) {
+            user.setRole("USER");
         }
         User savedUser = userService.save(user);
         return ResponseEntity.ok(savedUser);
@@ -78,6 +77,9 @@ public class UserController {
                     }
                     existingUser.setUsername(user.getUsername());
                     existingUser.setEmail(user.getEmail());
+                    if (user.getRole() != null && !user.getRole().isEmpty()) {
+                        existingUser.setRole(user.getRole());
+                    }
                     if (user.getPassword() != null && !user.getPassword().isEmpty()) {
                         existingUser.setPassword(user.getPassword());
                     }
@@ -86,11 +88,6 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    /**
-     * 删除用户
-     * @param id 用户 ID，从 URL 路径中获取
-     * @return ResponseEntity<Void> 删除成功返回 200 OK；用户不存在返回 404 Not Found
-     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         return userService.findById(id)

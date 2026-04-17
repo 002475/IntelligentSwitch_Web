@@ -91,6 +91,34 @@
         .add-btn:hover {
             background-color: #218838;
         }
+        .add-btn.disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .search-box {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .search-box input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .search-box button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .search-box button:hover {
+            background-color: #0056b3;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -130,10 +158,31 @@
         .delete-btn:hover {
             background-color: #c82333;
         }
+        .toggle-btn {
+            background-color: #007BFF;
+            color: white;
+        }
+        .toggle-btn:hover {
+            background-color: #0056b3;
+        }
         .empty-message {
             text-align: center;
             color: #666;
             padding: 20px;
+        }
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status-enabled {
+            background-color: #28a745;
+            color: white;
+        }
+        .status-disabled {
+            background-color: #dc3545;
+            color: white;
         }
     </style>
 </head>
@@ -153,7 +202,12 @@
 
     <div class="container">
         <h2>电器设备列表</h2>
-        <a href="${pageContext.request.contextPath}/applianceedit" class="add-btn">添加设备</a>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="搜索电器名称、位置或类型...">
+            <button onclick="searchAppliances()">搜索</button>
+            <button onclick="loadAllAppliances()" style="background-color: #6c757d;">重置</button>
+        </div>
+        <a href="${pageContext.request.contextPath}/applianceedit" class="add-btn" id="addBtn">添加设备</a>
         <p id="debugInfo" style="color: blue; font-size: 12px;"></p>
         <table id="applianceTable">
             <thead>
@@ -176,143 +230,160 @@
         const contextPath = '${pageContext.request.contextPath}';
         const API_BASE_URL = contextPath + '/api/appliances';
 
-        console.log('=== Debug Info ===');
-        console.log('API Base URL:', API_BASE_URL);
+        const currentUser = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+        const isAdmin = currentUser.role === 'ADMIN';
 
-        function renderTable() {
+        console.log('Current User:', currentUser);
+        console.log('Is Admin:', isAdmin);
+
+        if (!isAdmin) {
+            const addBtn = document.getElementById('addBtn');
+            addBtn.classList.add('disabled');
+            addBtn.onclick = function(e) {
+                e.preventDefault();
+                alert('只有管理员可以添加电器设备');
+            };
+        }
+
+        function renderTable(appliances) {
             const debugInfo = document.getElementById('debugInfo');
-            debugInfo.textContent = 'Loading...';
+            debugInfo.textContent = '已加载 ' + appliances.length + ' 个电器设备';
 
-            console.log('\n--- Fetching Appliances ---');
-            console.log('Request URL:', API_BASE_URL);
+            const tbody = document.getElementById('applianceTableBody');
+            const emptyMsg = document.getElementById('emptyMessage');
 
-            fetch(API_BASE_URL, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                console.log('Response Status:', response.status);
-                console.log('Response OK:', response.ok);
+            tbody.innerHTML = '';
 
-                if (!response.ok) {
-                    throw new Error('HTTP error! status: ' + response.status);
-                }
-                return response.json();
-            })
-            .then(appliances => {
-                console.log('Appliances data received:', appliances);
-                console.log('Number of appliances:', appliances.length);
+            if (appliances.length === 0) {
+                emptyMsg.style.display = 'block';
+                document.getElementById('applianceTable').style.display = 'none';
+                return;
+            } else {
+                emptyMsg.style.display = 'none';
+                document.getElementById('applianceTable').style.display = 'table';
+            }
 
-                debugInfo.textContent = 'Loaded ' + appliances.length + ' appliances successfully!';
+            appliances.forEach((appliance, index) => {
+                const tr = document.createElement('tr');
 
-                const tbody = document.getElementById('applianceTableBody');
-                const emptyMsg = document.getElementById('emptyMessage');
+                const applianceId = appliance.id || '-';
+                const type = appliance.type || 'N/A';
+                const name = appliance.name || 'N/A';
+                const location = appliance.location || 'N/A';
+                const status = appliance.status !== null && appliance.status !== undefined ? appliance.status : false;
 
-                tbody.innerHTML = '';
-                tbody.style.display = 'table-row-group';
+                let actionButtons = '<button class="action-btn toggle-btn" onclick="toggleAppliance(' + applianceId + ', ' + status + ')">' + (status ? '关闭' : '开启') + '</button>';
 
-                if (appliances.length === 0) {
-                    emptyMsg.style.display = 'block';
-                    document.getElementById('applianceTable').style.display = 'none';
-                    console.log('No appliances in database');
-                    return;
-                } else {
-                    emptyMsg.style.display = 'none';
-                    document.getElementById('applianceTable').style.display = 'table';
+                if (isAdmin) {
+                    actionButtons += '<button class="action-btn edit-btn" onclick="editAppliance(' + applianceId + ')">编辑</button>' +
+                                    '<button class="action-btn delete-btn" onclick="deleteAppliance(' + applianceId + ')">删除</button>';
                 }
 
-                appliances.forEach((appliance, index) => {
-                    console.log(`Rendering appliance ${index + 1}:`, appliance);
-                    const tr = document.createElement('tr');
-
-                    const applianceId = appliance.id || '-';
-                    const type = appliance.type || 'N/A';
-                    const name = appliance.name || 'N/A';
-                    const location = appliance.location || 'N/A';
-                    const status = appliance.status !== null && appliance.status !== undefined ? appliance.status : false;
-
-                    tr.innerHTML = '<td>' + applianceId + '</td>' +
-                                   '<td>' + name + '</td>' +
-                                   '<td>' + location + '</td>' +
-                                   '<td>' + type + '</td>' +
-                                   '<td><span class="status-badge ' + (status ? 'status-enabled' : 'status-disabled') + '">' + (status ? '开启' : '关闭') + '</span></td>' +
-                                   '<td>' +
-                                   '<button class="action-btn toggle-btn" onclick="toggleAppliance(' + applianceId + ', ' + status + ')">' + (status ? '关闭' : '开启') + '</button>' +
-                                   '<button class="action-btn edit-btn" onclick="editAppliance(' + applianceId + ')">编辑</button>' +
-                                   '<button class="action-btn delete-btn" onclick="deleteAppliance(' + applianceId + ')">删除</button>' +
-                                   '</td>';
-                    tbody.appendChild(tr);
-                });
-
-                console.log('Table rendered successfully');
-                console.log('Total rows in tbody:', tbody.children.length);
-            })
-            .catch(error => {
-                console.error('=== ERROR ===');
-                console.error('Error fetching appliances:', error);
-                debugInfo.textContent = 'Error: ' + error.message;
-
-                let errorMsg = 'Failed to load appliances\n\n';
-                errorMsg += 'Error: ' + error.message + '\n\n';
-                errorMsg += 'Please check backend is running on http://localhost:8080';
-
-                alert(errorMsg);
+                tr.innerHTML = '<td>' + applianceId + '</td>' +
+                               '<td>' + name + '</td>' +
+                               '<td>' + location + '</td>' +
+                               '<td>' + type + '</td>' +
+                               '<td><span class="status-badge ' + (status ? 'status-enabled' : 'status-disabled') + '">' + (status ? '开启' : '关闭') + '</span></td>' +
+                               '<td>' + actionButtons + '</td>';
+                tbody.appendChild(tr);
             });
         }
 
-        window.deleteAppliance = function(id) {
-            if (confirm('确定要删除这个设备吗？')) {
-                const deleteUrl = API_BASE_URL + '/' + id;
-                console.log('Deleting appliance with ID:', id);
+        function loadAllAppliances() {
+            document.getElementById('searchInput').value = '';
+            fetch(API_BASE_URL)
+            .then(response => response.json())
+            .then(appliances => {
+                renderTable(appliances);
+            })
+            .catch(error => {
+                console.error('Error fetching appliances:', error);
+                alert('加载电器设备失败：' + error.message);
+            });
+        }
 
-                fetch(deleteUrl, {
-                    method: 'DELETE'
+        window.searchAppliances = function() {
+            const keyword = document.getElementById('searchInput').value.trim();
+            if (!keyword) {
+                loadAllAppliances();
+                return;
+            }
+
+            fetch(API_BASE_URL + '/search?keyword=' + encodeURIComponent(keyword))
+            .then(response => response.json())
+            .then(appliances => {
+                renderTable(appliances);
+            })
+            .catch(error => {
+                console.error('Error searching appliances:', error);
+                alert('搜索失败：' + error.message);
+            });
+        };
+
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchAppliances();
+            }
+        });
+
+        window.deleteAppliance = function(id) {
+            if (!isAdmin) {
+                alert('只有管理员可以删除电器设备');
+                return;
+            }
+
+            if (confirm('确定要删除这个设备吗？')) {
+                fetch(API_BASE_URL + '/' + id, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ isAdmin: true })
                 })
                 .then(response => {
                     if (response.ok) {
-                        renderTable();
+                        loadAllAppliances();
                         alert('设备删除成功');
                     } else {
-                        alert('删除失败');
+                        return response.json().then(err => {
+                            throw new Error(err.message || '删除失败');
+                        });
                     }
                 })
                 .catch(error => {
                     console.error('Error deleting appliance:', error);
-                    alert('Error deleting appliance: ' + error.message);
+                    alert('删除失败：' + error.message);
                 });
             }
         };
 
         window.toggleAppliance = function(id, currentStatus) {
-            const toggleUrl = API_BASE_URL + '/' + id + '/toggle-status';
-            console.log('Toggling status for appliance ID:', id, 'Current:', currentStatus);
-
-            fetch(toggleUrl, {
+            fetch(API_BASE_URL + '/' + id + '/toggle-status', {
                 method: 'PATCH'
             })
-                .then(response => {
-                    if (response.ok) {
-                        renderTable();
-                        alert('设备状态已切换');
-                    } else {
-                        alert('切换失败');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error toggling status:', error);
-                    alert('Error: ' + error.message);
-                });
+            .then(response => {
+                if (response.ok) {
+                    loadAllAppliances();
+                    alert('设备状态已切换');
+                } else {
+                    alert('切换失败');
+                }
+            })
+            .catch(error => {
+                console.error('Error toggling status:', error);
+                alert('Error: ' + error.message);
+            });
         };
 
         window.editAppliance = function(id) {
-            console.log('Editing appliance with ID:', id);
+            if (!isAdmin) {
+                alert('只有管理员可以编辑电器设备');
+                return;
+            }
             window.location.href = contextPath + '/applianceedit?id=' + id;
         };
 
-        console.log('=== Page Loaded ===');
-        renderTable();
+        loadAllAppliances();
     </script>
 </body>
 </html>

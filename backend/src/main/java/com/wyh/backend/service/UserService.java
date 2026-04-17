@@ -36,4 +36,8 @@ public class UserService {
     public void deleteById(Long id) {
         userRepository.deleteById(id);
     }
+
+    public List<User> searchUsers(String keyword) {
+        return userRepository.findByUsernameContainingOrEmailContaining(keyword, keyword);
+    }
 }

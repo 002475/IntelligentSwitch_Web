@@ -7,16 +7,10 @@ import java.time.LocalDateTime;
 @Table(name = "users")
 public class User {
 
-    /**
-     * 用户 ID，主键，自增策略
-     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /**
-     * 用户名，不可为空，唯一约束，最大长度 50
-     */
     @Column(nullable = false, unique = true, length = 50)
     private String username;
 
@@ -25,6 +19,9 @@ public class User {
 
     @Column(length = 255)
     private String password;
+
+    @Column(name = "role", length = 20)
+    private String role = "USER";
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -56,6 +53,13 @@ public class User {
         this.password = password;
     }
 
+    public User(String username, String email, String password, String role) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.role = role != null ? role : "USER";
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getUsername() { return username; }
@@ -64,6 +68,8 @@ public class User {
     public void setEmail(String email) { this.email = email; }
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }

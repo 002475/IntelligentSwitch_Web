@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ElectricalApplianceService {
@@ -43,6 +44,22 @@ public class ElectricalApplianceService {
 
     public List<ElectricalAppliance> searchByLocation(String keyword) {
         return applianceRepository.findByLocationContaining(keyword);
+    }
+
+    public List<ElectricalAppliance> searchAppliances(String keyword) {
+        List<ElectricalAppliance> byName = applianceRepository.findByNameContaining(keyword);
+        List<ElectricalAppliance> byLocation = applianceRepository.findByLocationContaining(keyword);
+        List<ElectricalAppliance> byType = applianceRepository.findByType(keyword);
+        
+        return byName.stream()
+            .collect(Collectors.toMap(
+                ElectricalAppliance::getId,
+                a -> a,
+                (a, b) -> a
+            ))
+            .values()
+            .stream()
+            .collect(Collectors.toList());
     }
 
     public boolean existsByName(String name) {
